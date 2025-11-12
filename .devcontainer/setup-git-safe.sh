@@ -4,4 +4,4 @@ set -e
 git config --global init.defaultBranch main
 git config --global pull.rebase true
 git config --global --add safe.directory /workspaces/b6n/notebooks
-git config --global --add safe.directory /workspaces/b6n/.devcontainer
+git config --global --add safe.directory /workspaces/b6n/devcontainerb
