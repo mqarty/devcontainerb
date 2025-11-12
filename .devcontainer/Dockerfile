@@ -20,6 +20,7 @@ RUN apt-get update -y && \
     git \
     iputils-ping \
     jq \
+    openssh-client \
     pipx \
     postgresql \
     python3 \
