@@ -45,7 +45,7 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Configure git
-RUN git config --system init.defaultBranch main
-RUN git config --system pull.rebase true
-RUN git config --system --add safe.directory /workspaces/b6n/notebooks
-RUN git config --system --add safe.directory /workspaces/b6n/devcontainerb
+# RUN git config --system init.defaultBranch main
+# RUN git config --system pull.rebase true
+# RUN git config --system --add safe.directory /workspaces/b6n/notebooks
+# RUN git config --system --add safe.directory /workspaces/b6n/devcontainerb
