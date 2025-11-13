@@ -3,12 +3,13 @@
   "build": {
     "dockerfile": "./Dockerfile"
   },
+  "remoteUser": "vscode",
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   "mounts": [
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
-    // "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/b6n/.devcontainer,type=bind",
     "source=${localWorkspaceFolder}/notebooks,target=/workspaces/b6n/notebooks,type=bind"
