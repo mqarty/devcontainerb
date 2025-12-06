@@ -20,17 +20,22 @@ RUN apt-get update -y && \
     git \
     iputils-ping \
     jq \
+    nodejs \
+    npm \
     openssh-client \
     pipx \
     postgresql \
     python3 \
     python3-pip \
     sudo \
+    tree \
     unzip \
     vim \
     wget \
     zip && \
     rm -rf /var/lib/apt/lists/*
+
+RUN node --version && npm --version && npx --version
 
 # # Install Microsoft package repository and .NET SDK (use 8.0 for stable availability)
 RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
@@ -47,5 +52,6 @@ RUN apt-get update -y && \
 # Configure git
 RUN git config --global init.defaultBranch main
 RUN git config --global pull.rebase true
-RUN git config --global --add safe.directory /workspaces/b6n/devcontainerb
-RUN git config --global --add safe.directory /workspaces/b6n/notebooks
+
+# Set Container time to my local time
+RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime

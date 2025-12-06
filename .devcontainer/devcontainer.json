@@ -11,13 +11,15 @@
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/b6n/.devcontainer,type=bind",
-    "source=${localWorkspaceFolder}/notebooks,target=/workspaces/b6n/notebooks,type=bind"
+    "source=${localWorkspaceFolder}/notebooks,target=/workspaces/b6n/notebooks,type=bind",
+    "source=${localWorkspaceFolder}/llibrariam,target=/workspaces/b6n/llibrariam,type=bind"
   ],
   "runArgs": [],
   "customizations": {
     "vscode": {
       "extensions": [],
       "settings": {
+        "chat.mcp.enabled": true,
         "editor.tabSize": 4,
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
@@ -25,6 +27,9 @@
             "path": "zsh"
           }
         }
+      },
+      "mcp": {
+        // postman
       }
     }
   },
@@ -32,5 +37,6 @@
     "HISTFILE": "/root/.zsh_history",
     "HISTSIZE": "100000",
     "SAVEHIST": "100000"
-  }
+  },
+  "postCreateCommand": "git config --global --add safe.directory /workspaces/b6n/devcontainerb && git config --global --add safe.directory /workspaces/b6n/notebooks && git config --global --add safe.directory /workspaces/b6n/llibrariam"
 }
