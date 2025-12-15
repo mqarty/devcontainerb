@@ -45,5 +45,5 @@
     "HISTSIZE": "100000",
     "SAVEHIST": "100000"
   },
-  "postCreateCommand": "git config --global --add safe.directory /workspaces/b6n/devcontainerb && git config --global --add safe.directory /workspaces/b6n/notebooks && git config --global --add safe.directory /workspaces/b6n/llibrariam && git config --global --add safe.directory /workspaces/b6n/RAGUdemy"
+  "postStartCommand": "bash /workspaces/b6n/.devcontainer/scripts/mark-git-safe.sh || true"
 }
