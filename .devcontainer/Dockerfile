@@ -32,22 +32,24 @@ RUN apt-get update -y && \
     unzip \
     vim \
     wget \
-    zip && \
-    rm -rf /var/lib/apt/lists/*
+    zip
 
+# Validate Node
 RUN node --version && npm --version && npx --version
 
+# Install UV
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # # Install Microsoft package repository and .NET SDK (use 8.0 for stable availability)
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/24.04/prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/microsoft-prod.list && \
+RUN add-apt-repository -y ppa:dotnet/backports && \
     apt-get update -y && \
-    apt-get install -y --no-install-recommends dotnet-sdk-8.0 && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y dotnet-sdk-9.0 && \
+    /bin/rm -rf /var/lib/apt/lists/*
 
 # Install python-level packages that aren't always available as apt packages
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends python3-boto3 python3-poetry && \
-    rm -rf /var/lib/apt/lists/*
+    /bin/rm -rf /var/lib/apt/lists/*
 
 # Configure git
 RUN git config --global init.defaultBranch main
@@ -55,3 +57,5 @@ RUN git config --global pull.rebase true
 
 # Set Container time to my local time
 RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+
+# Install UV

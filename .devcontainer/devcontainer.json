@@ -13,11 +13,14 @@
     "source=${localWorkspaceFolder}/devcontainerb,target=/workspaces/b6n/devcontainerb,type=bind",
     "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/b6n/.devcontainer,type=bind",
     "source=${localWorkspaceFolder}/notebooks,target=/workspaces/b6n/notebooks,type=bind",
-    "source=${localWorkspaceFolder}/llibrariam,target=/workspaces/b6n/llibrariam,type=bind"
+    "source=${localWorkspaceFolder}/llibrariam,target=/workspaces/b6n/llibrariam,type=bind",
+    "source=${localWorkspaceFolder}/RAGUdemy,target=/workspaces/b6n/RAGUdemy,type=bind"
   ],
   "runArgs": [
     "--name",
-    "devcontainerb"
+    "devcontainerb",
+    "--gpus",
+    "all"
   ],
   "customizations": {
     "vscode": {
@@ -42,5 +45,5 @@
     "HISTSIZE": "100000",
     "SAVEHIST": "100000"
   },
-  "postCreateCommand": "git config --global --add safe.directory /workspaces/b6n/devcontainerb && git config --global --add safe.directory /workspaces/b6n/notebooks && git config --global --add safe.directory /workspaces/b6n/llibrariam"
+  "postCreateCommand": "git config --global --add safe.directory /workspaces/b6n/devcontainerb && git config --global --add safe.directory /workspaces/b6n/notebooks && git config --global --add safe.directory /workspaces/b6n/llibrariam && git config --global --add safe.directory /workspaces/b6n/RAGUdemy"
 }
