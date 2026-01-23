@@ -12,15 +12,16 @@
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=${localWorkspaceFolder}/devcontainerb,target=/workspaces/b6n/devcontainerb,type=bind",
     "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/b6n/.devcontainer,type=bind",
-    "source=${localWorkspaceFolder}/notebooks,target=/workspaces/b6n/notebooks,type=bind",
-    "source=${localWorkspaceFolder}/llibrariam,target=/workspaces/b6n/llibrariam,type=bind",
-    "source=${localWorkspaceFolder}/RAGUdemy,target=/workspaces/b6n/RAGUdemy,type=bind"
+    "source=${localWorkspaceFolder}/voice-core,target=/workspaces/b6n/voice-core,type=bind",
+    "source=${localWorkspaceFolder}/pulse,target=/workspaces/b6n/pulse,type=bind",
+    "source=${localWorkspaceFolder}/terraform,target=/workspaces/b6n/terraform,type=bind",
+    "source=${localWorkspaceFolder}/vocode-core,target=/workspaces/b6n/vocode-core,type=bind",
+    "source=${localWorkspaceFolder}/voice-lambdas,target=/workspaces/b6n/voice-lambdas,type=bind",
+    "source=${localWorkspaceFolder}/health-data-engine,target=/workspaces/b6n/health-data-engine,type=bind",
   ],
   "runArgs": [
     "--name",
-    "devcontainerb",
-    "--gpus",
-    "all"
+    "devcontainerb"
   ],
   "customizations": {
     "vscode": {
@@ -43,7 +44,8 @@
   "containerEnv": {
     "HISTFILE": "/root/.zsh_history",
     "HISTSIZE": "100000",
-    "SAVEHIST": "100000"
+    "SAVEHIST": "100000",
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
   },
   "postStartCommand": "bash /workspaces/b6n/.devcontainer/scripts/mark-git-safe.sh || true"
 }

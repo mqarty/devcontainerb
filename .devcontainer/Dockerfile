@@ -54,8 +54,16 @@ RUN apt-get update -y && \
 # Configure git
 RUN git config --global init.defaultBranch main
 RUN git config --global pull.rebase true
+RUN git config --global url."https://\${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    echo "complete -C '/usr/local/bin/aws_completer' aws" >> ~/.bashrc && \
+    echo "complete -C '/usr/local/bin/aws_completer' aws" >> ~/.zshrc && \
+    aws --version
+COPY aws-config /root/.aws/config
 
 # Set Container time to my local time
 RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-
-# Install UV

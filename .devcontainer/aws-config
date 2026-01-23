@@ -1,0 +1,9 @@
+[sso-session rg]
+sso_start_url = https://radiantgraph.awsapps.com/start/
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile dev]
+sso_session = rg
+aws_access_key_id=ASIAQXUIXUE3VDPIJZ7E
+aws_secret_access_key=9ADsX/oebmldYnPCO0yfdpNwEqD4ltFjnLIL/eH9
