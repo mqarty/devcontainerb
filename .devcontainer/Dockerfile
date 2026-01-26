@@ -55,7 +55,6 @@ RUN apt-get update -y && \
 # Configure git
 RUN git config --global init.defaultBranch main
 RUN git config --global pull.rebase true
-RUN git config --global url."https://\${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
@@ -68,8 +67,6 @@ COPY aws-config /root/.aws/config
 # https://github.com/twilio-labs/dev-phone
 RUN npm install -g twilio-cli
 RUN twilio plugins:install @twilio-labs/plugin-dev-phone
-# Configure - https://www.twilio.com/docs/twilio-cli/
-RUN 
 
 # Set Container time to UTC (will use host's timezone via environment variable)
 # Users can override with TZ environment variable in devcontainer.json

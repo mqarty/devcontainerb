@@ -10,8 +10,7 @@
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
-    "source=twilio-config,target=/root/.twilio-cli,type=volume",
-    "source=${localWorkspaceFolder},target=/workspaces/Code,type=bind"
+    "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
   "runArgs": [
     "--name",
@@ -42,7 +41,8 @@
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "TWILIO_ACCOUNT_SID": "${localEnv:TWILIO_ACCOUNT_SID}",
     "TWILIO_AUTH_TOKEN": "${localEnv:TWILIO_AUTH_TOKEN}",
+    "NGROK_AUTH_TOKEN": "${localEnv:NGROK_AUTH_TOKEN}",
     "TZ": "${localEnv:TZ}"
   },
-  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && zsh -c 'omz update' || true"
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && zsh -c 'omz update' || true"
 }
