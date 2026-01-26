@@ -6,15 +6,18 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
+  // Load environment variables from .env file (create from .env.example)
+  "runArgs": [
+    "--name",
+    "devcontainer-workspace",
+    "--env-file",
+    "${localWorkspaceFolder}/.devcontainer/.env"
+  ],
   "mounts": [
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
-  ],
-  "runArgs": [
-    "--name",
-    "devcontainer-workspace"
   ],
   "customizations": {
     "vscode": {
@@ -37,12 +40,8 @@
   "containerEnv": {
     "HISTFILE": "/root/.zsh_history",
     "HISTSIZE": "100000",
-    "SAVEHIST": "100000",
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
-    "TWILIO_ACCOUNT_SID": "${localEnv:TWILIO_ACCOUNT_SID}",
-    "TWILIO_AUTH_TOKEN": "${localEnv:TWILIO_AUTH_TOKEN}",
-    "NGROK_AUTH_TOKEN": "${localEnv:NGROK_AUTH_TOKEN}",
-    "TZ": "${localEnv:TZ}"
+    "SAVEHIST": "100000"
   },
-  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && zsh -c 'omz update' || true"
+  "postCreateCommand": "cd ${containerWorkspaceFolder}/dotfiles && ./install.sh",
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\""
 }

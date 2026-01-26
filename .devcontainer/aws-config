@@ -5,3 +5,7 @@ sso_registration_scopes = sso:account:access
 
 [profile dev]
 sso_session = rg
+
+[default]
+region = us-east-1
+output = json

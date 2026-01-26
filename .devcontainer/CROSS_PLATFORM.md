@@ -15,20 +15,25 @@ The devcontainer runs Ubuntu 24.04 Linux in a Docker container, so the actual de
 
 ### Oh My Zsh (Recommended)
 
-This devcontainer is configured to use **Oh My Zsh** for an enhanced shell experience. The setup is automated via **your personal dotfiles repo**:
+This devcontainer is configured to use **Oh My Zsh** for an enhanced shell experience. The setup happens in two stages:
 
-- 🔧 Auto-installs on container creation via your `dotfiles/install.sh`
-- 🎨 **agnoster** theme with Nerd Fonts (requires VS Code font override to "Roboto Mono for Powerline" or similar)
-- 🔌 **Plugins enabled**:
-  - `zsh-autosuggestions` - Fish-like command suggestions
-  - `zsh-syntax-highlighting` - Command syntax highlighting
-  - `zsh-history-substring-search` - Search history with arrow keys
-- 📚 **History management**: Includes auto-repair for corrupted history files (see your `dotfiles/HISTORY_SETUP.md`)
-- ⚙️ **Updates**: Automatic weekly updates via Oh My Zsh (runs on container startup)
+1. **Build-time (Dockerfile)**:
+   - 🏗️ Oh My Zsh + plugins installed during Docker image build
+   - 🔌 Plugins pre-installed:
+     - `zsh-autosuggestions` - Fish-like command suggestions
+     - `zsh-syntax-highlighting` - Command syntax highlighting
+     - `zsh-history-substring-search` - Search history with arrow keys
+   - ⚡ Faster container startup (no network dependency at startup)
 
-**Note**: The devcontainer pulls from your personal dotfiles repo. Make sure your dotfiles are configured how you like them, as this is what gets installed in the container.
+2. **Post-create time (dotfiles/install.sh)**:
+   - 🎨 Applies **agnoster** theme with Nerd Fonts (requires VS Code font override to "Roboto Mono for Powerline" or similar)
+   - 📚 Sets up history management with auto-repair for corrupted history files (see `dotfiles/HISTORY_SETUP.md`)
+   - ⚙️ Configures weekly automatic updates via Oh My Zsh
+   - 🔧 Applies your personal dotfiles customizations
 
-For manual updates or configuration, use:
+**Note**: The container runs `dotfiles/install.sh` automatically on first creation. Make sure your dotfiles are configured how you like them.
+
+For manual updates or configuration after creation, use:
 ```bash
 omz update          # Update to latest version
 omz --version       # Check current version
@@ -36,21 +41,61 @@ omz --version       # Check current version
 
 ### Environment-Specific Configuration
 
-If you want different settings per OS, add a `.devcontainer/.env.local` file:
+To customize per OS, edit `.devcontainer/.env`:
 
 #### For macOS:
 ```bash
-# ~/.devcontainer/.env.local (macOS)
+# .devcontainer/.env (macOS)
 TZ=America/Los_Angeles
 ```
 
 #### For Windows (WSL2):
 ```bash
-# ~/.devcontainer/.env.local (WSL2)
+# .devcontainer/.env (WSL2)
 TZ=America/Chicago
 ```
 
-Then reference in devcontainer.json (already set up to use `${localEnv:TZ}`).
+This file is automatically loaded when the container starts via `--env-file` in `devcontainer.json`.
+If you rebuild the `.devcontainer/.env` from scratch, use `setup-env.sh` (see below).
+
+## Environment Variables and Secrets Management
+
+### Setup (Required for devcontainer to access secrets)
+
+For detailed instructions, see **[ENV_SETUP.md](./ENV_SETUP.md)**.
+
+**Quick summary:**
+
+The devcontainer loads environment variables from `.devcontainer/.env` via Docker's `--env-file` flag.
+
+**To set up:**
+
+1. **Quick auto-setup** (on your Mac, outside container):
+   ```bash
+   cd ~/Code
+   .devcontainer/setup-env.sh
+   ```
+   This reads your existing `~/.zshrc.secrets` and creates `.devcontainer/.env`.
+
+2. **Manual setup:**
+   ```bash
+   cd ~/Code/.devcontainer
+   cp .env.example .env
+   code .env  # Edit with your credentials
+   ```
+
+3. **Rebuild the devcontainer** (in VS Code):
+   - Press `Cmd+Shift+P` (or `Ctrl+Shift+P` on Windows)
+   - Search for "Dev Containers: Rebuild Container"
+   - Select and run
+
+4. **Verify:**
+   ```bash
+   echo $TWILIO_ACCOUNT_SID
+   echo $GITHUB_TOKEN
+   ```
+
+**Note:** `.devcontainer/.env` is gitignored and will never be committed. The `.env.example` file contains only placeholders.
 
 ## Important Setup Notes
 
