@@ -70,5 +70,7 @@ RUN twilio plugins:install @twilio-labs/plugin-dev-phone
 # Configure - https://www.twilio.com/docs/twilio-cli/
 RUN 
 
-# Set Container time to my local time
-RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+# Set Container time to UTC (will use host's timezone via environment variable)
+# Users can override with TZ environment variable in devcontainer.json
+RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+ENV TZ=UTC

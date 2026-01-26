@@ -8,21 +8,14 @@
   },
   "mounts": [
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
-    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
+    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume",
-    "source=${localWorkspaceFolder}/devcontainerb,target=/workspaces/b6n/devcontainerb,type=bind",
-    "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/b6n/.devcontainer,type=bind",
-    "source=${localWorkspaceFolder}/voice-core,target=/workspaces/b6n/voice-core,type=bind",
-    "source=${localWorkspaceFolder}/pulse,target=/workspaces/b6n/pulse,type=bind",
-    "source=${localWorkspaceFolder}/terraform,target=/workspaces/b6n/terraform,type=bind",
-    "source=${localWorkspaceFolder}/vocode-core,target=/workspaces/b6n/vocode-core,type=bind",
-    "source=${localWorkspaceFolder}/voice-lambdas,target=/workspaces/b6n/voice-lambdas,type=bind",
-    "source=${localWorkspaceFolder}/health-data-engine,target=/workspaces/b6n/health-data-engine,type=bind",
+    "source=${localWorkspaceFolder},target=/workspaces/Code,type=bind"
   ],
   "runArgs": [
     "--name",
-    "devcontainerb"
+    "devcontainer-workspace"
   ],
   "customizations": {
     "vscode": {
@@ -48,7 +41,8 @@
     "SAVEHIST": "100000",
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "TWILIO_ACCOUNT_SID": "${localEnv:TWILIO_ACCOUNT_SID}",
-    "TWILIO_AUTH_TOKEN": "${localEnv:TWILIO_AUTH_TOKEN}"
+    "TWILIO_AUTH_TOKEN": "${localEnv:TWILIO_AUTH_TOKEN}",
+    "TZ": "${localEnv:TZ}"
   },
-  "postStartCommand": "bash /workspaces/b6n/.devcontainer/scripts/mark-git-safe.sh || true"
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && zsh -c 'omz update' || true"
 }

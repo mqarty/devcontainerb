@@ -1,0 +1,44 @@
+# Handle line endings consistently across Windows (WSL2) and macOS
+# See: https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Bash/shell scripts - always LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Docker - always LF
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+
+# JSON - always LF
+*.json text eol=lf
+jsonc text eol=lf
+
+# Python - always LF
+*.py text eol=lf
+*.pyx text eol=lf
+
+# JavaScript/TypeScript - always LF
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+
+# Markdown - always LF
+*.md text eol=lf
+
+# YAML - always LF
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.tar binary
+*.gz binary
