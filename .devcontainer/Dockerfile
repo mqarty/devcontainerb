@@ -17,6 +17,7 @@ RUN apt-get update -y && \
     curl \
     default-jre \
     dnsutils \
+    fzf \
     git \
     iputils-ping \
     jq \
