@@ -38,6 +38,7 @@ RUN apt-get update -y && \
     python3-pip \
     python3-boto3 \
     python3-poetry \
+    python3-typer \
     pipx \
     postgresql && \
     /bin/rm -rf /var/lib/apt/lists/*
@@ -70,15 +71,6 @@ COPY aws-config /root/.aws/config
 RUN npm install -g twilio-cli && \
     twilio plugins:install @twilio-labs/plugin-dev-phone
 
-# Install oh-my-zsh and plugins (do this during build for faster container starts)
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
-    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
-    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
-    git clone --depth=1 https://github.com/zsh-users/zsh-history-substring-search /root/.oh-my-zsh/custom/plugins/zsh-history-substring-search && \
-    git clone --depth=1 https://github.com/junegunn/fzf.git /root/.fzf && \
-    /root/.fzf/install --all --no-update-rc
-
 # Set Container time to UTC (will use host's timezone via environment variable)
 # Users can override with TZ environment variable in devcontainer.json
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-ENV TZ=UTC

@@ -140,3 +140,30 @@ twilio phone-numbers:list
 ```
 
 Or visit: https://console.twilio.com/us1/develop/phone-numbers/manage/incoming
+
+## aws_compose.py
+
+Pre-auth AWS SSO and then run `docker compose`.
+
+### Usage
+
+```bash
+# From workspace root
+python .devcontainer/tools/aws_compose.py up
+python .devcontainer/tools/aws_compose.py up --build
+python .devcontainer/tools/aws_compose.py logs -f app
+
+# With a different profile
+AWS_PROFILE=staging python .devcontainer/tools/aws_compose.py up
+
+# Dry run (show commands only)
+python .devcontainer/tools/aws_compose.py --dry-run up --build
+```
+
+### Flags
+- `--profile`, `-p` (env: AWS_PROFILE, default: dev)
+- `--dry-run` (show commands, do not execute)
+
+### Notes
+- If `aws login` fails, the script exits with that code and does not run docker compose.
+- Requires `typer` in the devcontainer Python env (`pip install typer`).

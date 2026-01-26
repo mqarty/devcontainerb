@@ -29,7 +29,7 @@ if [ -n "$PHONE_NUMBER" ]; then
     echo "🔧 Starting Twilio Dev Phone with number: $PHONE_NUMBER"
     # Show default TO number if configured
     if [ -n "$TWILIO_DEV_PHONE_TO_NUMBER" ]; then
-        echo "📞 Default TO number: $TWILIO_DEV_PHONE_TO_NUMBER (configure in UI)"
+        echo -e "\033[32m☎️  Default TO number: $TWILIO_DEV_PHONE_TO_NUMBER (configure in UI)\033[0m"
     fi
     # Show if force flag is being used
     if [[ "$EXTRA_ARGS" == *"--force"* ]]; then

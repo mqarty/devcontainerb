@@ -16,6 +16,10 @@ alias dps='docker ps'
 alias dpsa='docker ps -a'
 alias dlogs='docker logs -f'
 
+# AWS pre-auth wrapper for docker compose
+alias aws-compose='python /workspaces/Code/.devcontainer/tools/aws_compose.py'
+alias dcu='aws-compose up'
+
 # Twilio CLI shortcuts
 alias twilio-list-numbers='twilio phone-numbers:list'
 alias twilio-profiles='twilio profiles:list'
