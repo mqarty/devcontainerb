@@ -43,5 +43,5 @@
     "SAVEHIST": "100000"
   },
   "postCreateCommand": "cd ${containerWorkspaceFolder}/dotfiles && ./install.sh",
-  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\""
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
 }
