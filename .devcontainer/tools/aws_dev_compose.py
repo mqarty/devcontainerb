@@ -93,25 +93,39 @@ def compose(
         )
         raise typer.Exit(code=1)
 
-    login_cmd = ["aws", "login", "--profile", profile]
     compose_cmd = ["docker", "compose", *compose_args]
 
-    typer.echo(f"🔐 Running: {' '.join(login_cmd)}")
-    if not dry_run:
-        login_rc = run_cmd(login_cmd)
-        if login_rc != 0:
-            typer.echo(f"❌ aws login failed with exit code {login_rc}")
-            raise typer.Exit(code=login_rc)
-    else:
-        typer.echo("(dry-run) skipping execution")
+    # Skip AWS login for commands that don't need credentials
+    skip_login_commands = ["down", "ps", "logs", "stop", "kill", "rm"]
+    needs_login = not any(cmd in compose_args for cmd in skip_login_commands)
 
-    typer.echo(f"📋 Exporting AWS credentials for profile '{profile}'")
-    if not dry_run:
-        env = get_aws_credentials(profile)
-        typer.echo("✅ Credentials exported")
+    if needs_login:
+        login_cmd = ["aws", "login", "--profile", profile]
+        typer.echo(f"🔐 Running: {' '.join(login_cmd)}")
+        if not dry_run:
+            login_rc = run_cmd(login_cmd)
+            if login_rc != 0:
+                typer.echo(f"❌ aws login failed with exit code {login_rc}")
+                raise typer.Exit(code=login_rc)
+        else:
+            typer.echo("(dry-run) skipping execution")
+
+        typer.echo(f"📋 Exporting AWS credentials for profile '{profile}'")
+        if not dry_run:
+            env = get_aws_credentials(profile)
+            typer.echo("✅ Credentials exported")
+        else:
+            env = os.environ.copy()
+            typer.echo("(dry-run) skipping credential export")
     else:
+        typer.echo(f"⏩ Skipping AWS login for '{compose_args[0]}' command")
         env = os.environ.copy()
-        typer.echo("(dry-run) skipping credential export")
+        # Set dummy AWS vars to prevent docker-compose warnings
+        env.setdefault("AWS_ACCESS_KEY_ID", "")
+        env.setdefault("AWS_SECRET_ACCESS_KEY", "")
+        env.setdefault("AWS_REGION", "us-east-1")
+        env.setdefault("AWS_DEFAULT_REGION", "us-east-1")
+        env.setdefault("AWS_SESSION_TOKEN", "")
 
     typer.echo(f"🐳 Running: {' '.join(compose_cmd)}")
     if dry_run:
