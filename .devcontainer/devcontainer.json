@@ -10,6 +10,7 @@
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
+    "source=twilio-config,target=/root/.twilio-cli,type=volume",
     "source=${localWorkspaceFolder}/devcontainerb,target=/workspaces/b6n/devcontainerb,type=bind",
     "source=${localWorkspaceFolder}/.devcontainer,target=/workspaces/b6n/.devcontainer,type=bind",
     "source=${localWorkspaceFolder}/voice-core,target=/workspaces/b6n/voice-core,type=bind",
@@ -45,7 +46,9 @@
     "HISTFILE": "/root/.zsh_history",
     "HISTSIZE": "100000",
     "SAVEHIST": "100000",
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
+    "TWILIO_ACCOUNT_SID": "${localEnv:TWILIO_ACCOUNT_SID}",
+    "TWILIO_AUTH_TOKEN": "${localEnv:TWILIO_AUTH_TOKEN}"
   },
   "postStartCommand": "bash /workspaces/b6n/.devcontainer/scripts/mark-git-safe.sh || true"
 }

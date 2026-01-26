@@ -5,5 +5,3 @@ sso_registration_scopes = sso:account:access
 
 [profile dev]
 sso_session = rg
-aws_access_key_id=ASIAQXUIXUE3VDPIJZ7E
-aws_secret_access_key=9ADsX/oebmldYnPCO0yfdpNwEqD4ltFjnLIL/eH9

@@ -60,10 +60,15 @@ RUN git config --global url."https://\${GITHUB_TOKEN}@github.com/".insteadOf "ht
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install && \
-    echo "complete -C '/usr/local/bin/aws_completer' aws" >> ~/.bashrc && \
-    echo "complete -C '/usr/local/bin/aws_completer' aws" >> ~/.zshrc && \
     aws --version
 COPY aws-config /root/.aws/config
+
+# Install Twilio CLI
+# https://github.com/twilio-labs/dev-phone
+RUN npm install -g twilio-cli
+RUN twilio plugins:install @twilio-labs/plugin-dev-phone
+# Configure - https://www.twilio.com/docs/twilio-cli/
+RUN 
 
 # Set Container time to my local time
 RUN ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
