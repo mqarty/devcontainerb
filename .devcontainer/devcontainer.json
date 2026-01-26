@@ -19,6 +19,35 @@
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
+  "forwardPorts": [
+    3000,
+    3100,
+    3200,
+    6379,
+    4040
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "Grafana",
+      "onAutoForward": "notify"
+    },
+    "3100": {
+      "label": "Loki",
+      "onAutoForward": "notify"
+    },
+    "3200": {
+      "label": "Tempo",
+      "onAutoForward": "notify"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "notify"
+    },
+    "4040": {
+      "label": "Ngrok",
+      "onAutoForward": "notify"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [],
