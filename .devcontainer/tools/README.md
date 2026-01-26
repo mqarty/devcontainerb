@@ -19,7 +19,8 @@ Launch Twilio Dev Phone with automatic phone number configuration.
 
 Add to `.devcontainer/.env`:
 ```bash
-TWILIO_DEV_PHONE_NUMBER=+15551234567
+TWILIO_DEV_PHONE_NUMBER=1555KL56893
+TWILIO_DEV_PHONE_TO_NUMBER=+19254306829
 TWILIO_DEV_PHONE_FORCE=true  # Optional: force overwrite existing webhooks
 ```
 
