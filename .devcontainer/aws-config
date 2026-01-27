@@ -5,6 +5,7 @@ sso_registration_scopes = sso:account:access
 
 [profile dev]
 sso_session = rg
+duration_seconds = 7200
 
 [default]
 region = us-east-1

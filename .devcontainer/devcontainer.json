@@ -27,18 +27,6 @@
     4040
   ],
   "portsAttributes": {
-    "3000": {
-      "label": "Grafana",
-      "onAutoForward": "notify"
-    },
-    "3100": {
-      "label": "Loki",
-      "onAutoForward": "notify"
-    },
-    "3200": {
-      "label": "Tempo",
-      "onAutoForward": "notify"
-    },
     "6379": {
       "label": "Redis",
       "onAutoForward": "notify"
@@ -76,6 +64,5 @@
     "HISTSIZE": "100000",
     "SAVEHIST": "100000"
   },
-  "postCreateCommand": "cd ${containerWorkspaceFolder}/dotfiles && ./install.sh",
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
 }

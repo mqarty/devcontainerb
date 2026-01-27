@@ -21,7 +21,7 @@ GITHUB_TOKEN=${GITHUB_TOKEN:-}
 TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
 TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
 NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN:-}
-TZ=${TZ:-America/New_York}
+TZ=${TZ:-America/Los_Angeles}
 
 # History settings (optional - already in containerEnv)
 HISTFILE=/root/.zsh_history

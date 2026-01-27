@@ -71,6 +71,4 @@ COPY aws-config /root/.aws/config
 RUN npm install -g twilio-cli && \
     twilio plugins:install @twilio-labs/plugin-dev-phone
 
-# Set Container time to UTC (will use host's timezone via environment variable)
-# Users can override with TZ environment variable in devcontainer.json
-RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
