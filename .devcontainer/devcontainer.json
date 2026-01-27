@@ -62,7 +62,12 @@
         }
       },
       "mcp": {
-        // postman
+        "servers": {
+          "grafana": {
+            "type": "sse",
+            "url": "https://localhost:8000/sse"
+          }
+        }
       }
     }
   },

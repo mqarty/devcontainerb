@@ -35,6 +35,22 @@ def run_cmd(cmd: List[str], env: Dict[str, str] | None = None) -> int:
     return proc.returncode
 
 
+def credentials_are_expired(profile: str) -> bool:
+    """Check if AWS credentials for profile are expired.
+
+    Returns True if credentials are expired or invalid, False if still valid.
+    """
+    try:
+        subprocess.check_output(
+            ["aws", "sts", "get-caller-identity", "--profile", profile],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+        return False  # Credentials are valid
+    except subprocess.CalledProcessError:
+        return True  # Credentials are expired or invalid
+
+
 def get_aws_credentials(profile: str) -> Dict[str, str]:
     """Export AWS credentials from profile and return as environment dict.
 
@@ -100,15 +116,19 @@ def compose(
     needs_login = not any(cmd in compose_args for cmd in skip_login_commands)
 
     if needs_login:
-        login_cmd = ["aws", "login", "--profile", profile]
-        typer.echo(f"🔐 Running: {' '.join(login_cmd)}")
-        if not dry_run:
-            login_rc = run_cmd(login_cmd)
-            if login_rc != 0:
-                typer.echo(f"❌ aws login failed with exit code {login_rc}")
-                raise typer.Exit(code=login_rc)
+        # Check if credentials are already valid before logging in
+        if credentials_are_expired(profile):
+            login_cmd = ["aws", "login", "--profile", profile]
+            typer.echo(f"🔐 Credentials expired. Running: {' '.join(login_cmd)}")
+            if not dry_run:
+                login_rc = run_cmd(login_cmd)
+                if login_rc != 0:
+                    typer.echo(f"❌ aws login failed with exit code {login_rc}")
+                    raise typer.Exit(code=login_rc)
+            else:
+                typer.echo("(dry-run) skipping execution")
         else:
-            typer.echo("(dry-run) skipping execution")
+            typer.echo("✅ Credentials are still valid, skipping login")
 
         typer.echo(f"📋 Exporting AWS credentials for profile '{profile}'")
         if not dry_run:
