@@ -24,7 +24,9 @@
     3100,
     3200,
     6379,
-    4040
+    4040,
+    4566,
+    8001
   ],
   "portsAttributes": {
     "6379": {
@@ -34,11 +36,21 @@
     "4040": {
       "label": "Ngrok",
       "onAutoForward": "notify"
+    },
+    "4566": {
+      "label": "LocalStack",
+      "onAutoForward": "notify"
+    },
+    "8001": {
+      "label": "DynamoDB Admin UI",
+      "onAutoForward": "notify"
     }
   },
   "customizations": {
     "vscode": {
-      "extensions": [],
+      "extensions": [
+        "MermaidChart.vscode-mermaid-chart"
+      ],
       "settings": {
         "chat.mcp.enabled": true,
         "editor.tabSize": 4,

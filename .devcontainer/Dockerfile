@@ -38,10 +38,13 @@ RUN apt-get update -y && \
     python3-pip \
     python3-boto3 \
     python3-poetry \
+    python3-pydantic \
     python3-typer \
     pipx \
     postgresql && \
     /bin/rm -rf /var/lib/apt/lists/*
+
+RUN pipx install pre-commit
 
 # Validate Node.js installation
 RUN node --version && npm --version && npx --version
