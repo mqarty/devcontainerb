@@ -37,9 +37,11 @@ RUN apt-get update -y && \
     python3 \
     python3-pip \
     python3-boto3 \
+    python3-jinja2 \
     python3-poetry \
     python3-pydantic \
     python3-typer \
+    python3-yaml  \
     pipx \
     postgresql && \
     /bin/rm -rf /var/lib/apt/lists/*

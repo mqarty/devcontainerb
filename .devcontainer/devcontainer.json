@@ -26,9 +26,14 @@
     6379,
     4040,
     4566,
-    8001
+    8001,
+    9090
   ],
   "portsAttributes": {
+    "3000": {
+      "label": "Grafana",
+      "onAutoForward": "notify"
+    },
     "6379": {
       "label": "Redis",
       "onAutoForward": "notify"
@@ -43,6 +48,10 @@
     },
     "8001": {
       "label": "DynamoDB Admin UI",
+      "onAutoForward": "notify"
+    },
+    "9090": {
+      "label": "Prometheus",
       "onAutoForward": "notify"
     }
   },
