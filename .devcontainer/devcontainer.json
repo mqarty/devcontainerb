@@ -3,6 +3,9 @@
   "build": {
     "dockerfile": "./Dockerfile"
   },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-from-docker:1": {}
+  },
   // Load environment variables from .env file (create from .env.example)
   "runArgs": [
     "--name",
@@ -14,7 +17,8 @@
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
-    "source=twilio-config,target=/root/.twilio-cli,type=volume"
+    "source=twilio-config,target=/root/.twilio-cli,type=volume",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
   "forwardPorts": [
     3000,
