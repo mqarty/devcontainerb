@@ -3,9 +3,6 @@
   "build": {
     "dockerfile": "./Dockerfile"
   },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
   // Load environment variables from .env file (create from .env.example)
   "runArgs": [
     "--name",
@@ -21,8 +18,6 @@
   ],
   "forwardPorts": [
     3000,
-    3100,
-    3200,
     6379,
     4040,
     4566,
@@ -72,10 +67,10 @@
       },
       "mcp": {
         "servers": {
-          "grafana": {
-            "type": "sse",
-            "url": "https://localhost:8000/sse"
-          }
+          // "grafana": {
+          //   "type": "sse",
+          //   "url": "https://localhost:8000/sse"
+          // }
         }
       }
     }
@@ -85,5 +80,5 @@
     "HISTSIZE": "100000",
     "SAVEHIST": "100000"
   },
-  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/radiantgraph/\".insteadOf \"https://github.com/radiantgraph/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
 }
