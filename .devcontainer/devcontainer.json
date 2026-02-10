@@ -4,7 +4,7 @@
     "dockerfile": "./Dockerfile"
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-from-docker:1": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   // Load environment variables from .env file (create from .env.example)
   "runArgs": [
@@ -17,8 +17,7 @@
     "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
-    "source=twilio-config,target=/root/.twilio-cli,type=volume",
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
   "forwardPorts": [
     3000,
@@ -67,7 +66,9 @@
           "zsh": {
             "path": "zsh"
           }
-        }
+        },
+        "extensions.ignoreRecommendations": true,
+        "extensions.showRecommendationsOnlyOnDemand": true
       },
       "mcp": {
         "servers": {
@@ -84,5 +85,5 @@
     "HISTSIZE": "100000",
     "SAVEHIST": "100000"
   },
-  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/radiantgraph/\".insteadOf \"https://github.com/radiantgraph/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
+  "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
 }
