@@ -25,7 +25,8 @@
     4040,
     4566,
     8001,
-    9090
+    9090,
+    16686
   ],
   "portsAttributes": {
     "3000": {
@@ -51,12 +52,18 @@
     "9090": {
       "label": "Prometheus",
       "onAutoForward": "notify"
+    },
+    "16686": {
+      "label": "Jaeger",
+      "onAutoForward": "notify"
     }
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        "MermaidChart.vscode-mermaid-chart"
+        "MermaidChart.vscode-mermaid-chart",
+        "ms-python.python",
+        "ms-azuretools.vscode-docker"
       ],
       "settings": {
         "chat.mcp.enabled": true,
