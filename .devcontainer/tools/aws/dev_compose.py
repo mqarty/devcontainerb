@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """AWS SSO pre-auth wrapper for docker compose.
 
 Usage:

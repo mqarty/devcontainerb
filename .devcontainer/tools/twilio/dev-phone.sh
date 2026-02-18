@@ -28,8 +28,8 @@ fi
 if [ -n "$PHONE_NUMBER" ]; then
     echo "🔧 Starting Twilio Dev Phone with number: $PHONE_NUMBER"
     # Show default TO number if configured
-    if [ -n "$TWILIO_DEV_PHONE_TO_NUMBER" ]; then
-        echo -e "\033[32m☎️  Default TO number: $TWILIO_DEV_PHONE_TO_NUMBER (configure in UI)\033[0m"
+    if [ -n "$TWILIO_PHONE_TO_NUMBER" ]; then
+        echo -e "\033[32m☎️  Default TO number: $TWILIO_PHONE_TO_NUMBER (configure in UI)\033[0m"
     fi
     # Show if force flag is being used
     if [[ "$EXTRA_ARGS" == *"--force"* ]]; then
@@ -38,7 +38,7 @@ if [ -n "$PHONE_NUMBER" ]; then
     # Run the command and capture exit code
     twilio dev-phone --phone-number "$PHONE_NUMBER" $EXTRA_ARGS
     EXIT_CODE=$?
-    
+
     if [ $EXIT_CODE -eq 0 ]; then
         echo "✅ Twilio Dev Phone started successfully"
         exit 0
@@ -51,7 +51,7 @@ else
     echo "💡 Tip: Set TWILIO_DEV_PHONE_NUMBER in .env or pass as argument"
     twilio dev-phone $EXTRA_ARGS
     EXIT_CODE=$?
-    
+
     if [ $EXIT_CODE -eq 0 ]; then
         echo "✅ Twilio Dev Phone started successfully"
         exit 0

@@ -63,7 +63,8 @@
       "extensions": [
         "MermaidChart.vscode-mermaid-chart",
         "ms-python.python",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "AmazonWebServices.aws-toolkit-vscode"
       ],
       "settings": {
         "chat.mcp.enabled": true,
@@ -74,8 +75,7 @@
             "path": "zsh"
           }
         },
-        "extensions.ignoreRecommendations": true,
-        "extensions.showRecommendationsOnlyOnDemand": true
+        "extensions.ignoreRecommendations": true
       },
       "mcp": {
         "servers": {
@@ -90,7 +90,11 @@
   "containerEnv": {
     "HISTFILE": "/root/.zsh_history",
     "HISTSIZE": "100000",
-    "SAVEHIST": "100000"
+    "SAVEHIST": "100000",
+    "AWS_PROFILE": "dev",
+    // The GODEBUG=netdns=cgo forces Go to use the same C DNS resolver that curl/nslookup use, avoiding the UDP timeout issue.
+    // For Terraform
+    "GODEBUG": "netdns=cgo"
   },
   "postStartCommand": "bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && git config --global url.\"https://${GITHUB_TOKEN}@github.com/\".insteadOf \"https://github.com/\" && grep -qF 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' ~/.zshrc || echo 'source ${containerWorkspaceFolder}/.devcontainer/aliases.sh' >> ~/.zshrc"
 }

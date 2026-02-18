@@ -70,6 +70,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv
     ./aws/install && \
     aws --version
 COPY aws-config /root/.aws/config
+COPY aws-credentials /root/.aws/credentials
 
 # Install Twilio CLI and dev-phone plugin (combine into one layer)
 # https://github.com/twilio-labs/dev-phone
