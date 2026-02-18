@@ -30,6 +30,20 @@ RUN apt-get update -y && \
     git \
     jq \
     sudo \
+    # Python build dependencies for pyenv
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libxml2-dev \
+    libxmlsec1-dev \
+    libffi-dev \
+    liblzma-dev \
     # Language runtimes
     default-jre \
     nodejs \
@@ -47,6 +61,9 @@ RUN apt-get update -y && \
     /bin/rm -rf /var/lib/apt/lists/*
 
 RUN pipx install pre-commit
+
+# Install pyenv
+RUN curl https://pyenv.run | bash
 
 # Validate Node.js installation
 RUN node --version && npm --version && npx --version
