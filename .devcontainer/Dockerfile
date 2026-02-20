@@ -46,8 +46,6 @@ RUN apt-get update -y && \
     liblzma-dev \
     # Language runtimes
     default-jre \
-    nodejs \
-    npm \
     python3 \
     python3-pip \
     python3-boto3 \
@@ -61,6 +59,11 @@ RUN apt-get update -y && \
     /bin/rm -rf /var/lib/apt/lists/*
 
 RUN pipx install pre-commit
+
+# Install Node.js 20.x for Twilio CLI compatibility
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    /bin/rm -rf /var/lib/apt/lists/*
 
 # Install pyenv
 RUN curl https://pyenv.run | bash
@@ -91,7 +94,7 @@ COPY aws-credentials /root/.aws/credentials
 
 # Install Twilio CLI and dev-phone plugin (combine into one layer)
 # https://github.com/twilio-labs/dev-phone
-RUN npm install -g twilio-cli && \
+RUN npm install -g --ignore-scripts twilio-cli && \
     twilio plugins:install @twilio-labs/plugin-dev-phone
 
 RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
