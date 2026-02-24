@@ -98,3 +98,9 @@ RUN npm install -g --ignore-scripts twilio-cli && \
     twilio plugins:install @twilio-labs/plugin-dev-phone
 
 RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
+
+# DevOps / Eng Role?
+# Install SOPS / assuming mac
+RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.amd64 && \
+    mv sops-v3.12.1.linux.amd64 /usr/local/bin/sops && \
+    chmod +x /usr/local/bin/sops
