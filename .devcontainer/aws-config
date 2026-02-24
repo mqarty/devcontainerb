@@ -5,6 +5,10 @@ sso_registration_scopes = sso:account:access
 
 [profile dev]
 sso_session = rg
+sso_account_name = Development
+sso_account_id = 050752626999
+sso_role_name = Engineering-Dev
+region = us-east-1
 duration_seconds = 7200
 
 [default]
