@@ -14,8 +14,9 @@
     "${localWorkspaceFolder}/.devcontainer/.env"
   ],
   "mounts": [
-    "source=${localEnv:HOME}/.zsh_history,target=/root/.zsh_history,type=bind",
+    "source=zsh-history,target=/root/.zsh_history_container,type=volume",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
+    "source=${localEnv:HOME}/.claude,target=/root/.claude,type=bind",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
@@ -75,20 +76,33 @@
             "path": "zsh"
           }
         },
-        "extensions.ignoreRecommendations": true
+        "extensions.ignoreRecommendations": true,
+        "[terraform]": {
+          "editor.defaultFormatter": "hashicorp.terraform",
+          "editor.formatOnSave": true
+        },
+        "[hcl]": {
+          "editor.defaultFormatter": "hashicorp.terraform",
+          "editor.formatOnSave": true
+        }
       },
       "mcp": {
         "servers": {
-          // "grafana": {
-          //   "type": "sse",
-          //   "url": "https://localhost:8000/sse"
-          // }
+          "terraform": {
+            "command": "docker",
+            "args": [
+              "run",
+              "-i",
+              "--rm",
+              "hashicorp/terraform-mcp-server"
+            ]
+          }
         }
       }
     }
   },
   "containerEnv": {
-    "HISTFILE": "/root/.zsh_history",
+    "HISTFILE": "/root/.zsh_history_container",
     "HISTSIZE": "100000",
     "SAVEHIST": "100000",
     "AWS_PROFILE": "dev",
