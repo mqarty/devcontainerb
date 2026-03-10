@@ -7,7 +7,7 @@ Usage:
   python .devcontainer/tools/aws_compose.py logs -f app
 
 Environment:
-  AWS_PROFILE (default: dev) - profile passed to `aws login --profile <profile>`
+    AWS_PROFILE (default: dev) - profile passed to `aws login --profile <profile>`
 
 Notes:
   - Authenticates with AWS SSO, exports credentials, and forwards arguments to `docker compose`.
@@ -94,8 +94,11 @@ def get_aws_credentials(profile: str) -> Dict[str, str]:
 )
 def compose(
     ctx: typer.Context,
-    profile: str = typer.Option(
-        "dev", "--profile", "-p", envvar="AWS_PROFILE", help="AWS profile for aws login"
+    aws_profile: str = typer.Option(
+        "dev",
+        "--aws-profile",
+        envvar="AWS_PROFILE",
+        help="AWS profile for aws login/export",
     ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show commands without executing"
@@ -117,8 +120,8 @@ def compose(
 
     if needs_login:
         # Check if credentials are already valid before logging in
-        if credentials_are_expired(profile):
-            login_cmd = ["aws", "login", "--profile", profile]
+        if credentials_are_expired(aws_profile):
+            login_cmd = ["aws", "login", "--profile", aws_profile]
             typer.echo(f"🔐 Credentials expired. Running: {' '.join(login_cmd)}")
             if not dry_run:
                 login_rc = run_cmd(login_cmd)
@@ -130,9 +133,9 @@ def compose(
         else:
             typer.echo("✅ Credentials are still valid, skipping login")
 
-        typer.echo(f"📋 Exporting AWS credentials for profile '{profile}'")
+        typer.echo(f"📋 Exporting AWS credentials for profile '{aws_profile}'")
         if not dry_run:
-            env = get_aws_credentials(profile)
+            env = get_aws_credentials(aws_profile)
             typer.echo("✅ Credentials exported")
         else:
             env = os.environ.copy()

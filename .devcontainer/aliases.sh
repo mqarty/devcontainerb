@@ -15,6 +15,7 @@ alias pulse='cd /workspaces/Code/pulse'
 alias dps='docker ps'
 alias dpsa='docker ps -a'
 alias dlogs='docker logs -f'
+alias drestart='docker compose restart'
 
 # AWS pre-auth wrapper for docker compose
 alias aws-compose='python /workspaces/Code/.devcontainer/tools/aws_compose.py'

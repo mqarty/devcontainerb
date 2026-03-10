@@ -30,6 +30,10 @@
     16686
   ],
   "portsAttributes": {
+    "3001": {
+      "label": "Twilio Dev Phone",
+      "onAutoForward": "notify"
+    },
     "3000": {
       "label": "Grafana",
       "onAutoForward": "notify"
