@@ -106,7 +106,7 @@
     }
   },
   "containerEnv": {
-    "HISTFILE": "/root/.zsh_history_container",
+    "HISTFILE": "/root/.zsh_history_container/.zsh_history",
     "HISTSIZE": "100000",
     "SAVEHIST": "100000",
     "AWS_PROFILE": "dev",
