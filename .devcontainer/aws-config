@@ -11,6 +11,14 @@ sso_role_name = Engineering-Dev
 region = us-east-1
 duration_seconds = 7200
 
+[profile prod]
+sso_session = rg
+sso_account_name = Production
+sso_account_id = 211125441247
+sso_role_name = Engineering-Prod
+region = us-east-1
+duration_seconds = 7200
+
 [default]
 region = us-east-1
 output = json
