@@ -28,6 +28,7 @@ RUN apt-get update -y && \
     openssh-client \
     # Development tools
     git \
+    gh \
     jq \
     sudo \
     # Python build dependencies for pyenv
@@ -83,16 +84,16 @@ RUN add-apt-repository -y ppa:dotnet/backports && \
 # Install Terraform (architecture-aware binary install)
 ARG TERRAFORM_VERSION=1.10.5
 RUN arch="$(dpkg --print-architecture)" && \
-        case "$arch" in \
-            amd64) tf_arch="amd64" ;; \
-            arm64) tf_arch="arm64" ;; \
-            *) echo "Unsupported architecture: $arch" && exit 1 ;; \
-        esac && \
-        curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${tf_arch}.zip" && \
-        unzip -o /tmp/terraform.zip -d /usr/local/bin && \
-        chmod +x /usr/local/bin/terraform && \
-        rm -f /tmp/terraform.zip && \
-        terraform -version
+    case "$arch" in \
+    amd64) tf_arch="amd64" ;; \
+    arm64) tf_arch="arm64" ;; \
+    *) echo "Unsupported architecture: $arch" && exit 1 ;; \
+    esac && \
+    curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${tf_arch}.zip" && \
+    unzip -o /tmp/terraform.zip -d /usr/local/bin && \
+    chmod +x /usr/local/bin/terraform && \
+    rm -f /tmp/terraform.zip && \
+    terraform -version
 
 # Configure git
 RUN git config --global init.defaultBranch main
@@ -118,3 +119,7 @@ RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
 RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.amd64 && \
     mv sops-v3.12.1.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
+
+# DuckDb
+RUN curl https://install.duckdb.org | sh
+

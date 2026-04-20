@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# Helper script to create .env file from your existing Mac environment
+# Helper script to create .env from currently available host environment values.
+# This is a convenience script; users can always edit .devcontainer/.env manually.
 
 ENV_FILE=".devcontainer/.env"
 
 echo "Creating $ENV_FILE from your current environment..."
 
-# Check if Mac .zshrc.secrets exists and source it
+# Optional: source user-specific secrets file if present.
+# This keeps dotfiles optional while still supporting existing local workflows.
 if [ -f "$HOME/.zshrc.secrets" ]; then
     echo "Found ~/.zshrc.secrets, sourcing it..."
     source "$HOME/.zshrc.secrets"

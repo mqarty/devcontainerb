@@ -1,83 +1,86 @@
 # Environment Variable Setup for Devcontainer
 
-## Problem
-Environment variables defined in your Mac's shell (`.zshrc.secrets`) are not available to VS Code's GUI process, so `${localEnv:...}` in devcontainer.json returns empty values.
+## Canonical Approach
 
-## Solution: Use .env File (Recommended)
+Use `.devcontainer/.env` as the shared, supported source for devcontainer secrets.
 
-### Quick Setup
+Do not rely on shell startup files (such as dotfiles) for required project credentials.
+Dotfiles remain user-specific and optional.
 
-**On your Mac (outside the devcontainer):**
+## Why This Is The Default
+
+- Works when VS Code is launched from GUI or terminal.
+- Keeps a single project-level setup path for all users.
+- Supports Docker Compose build secrets that depend on `GITHUB_TOKEN`.
+- `.devcontainer/.env` is ignored by git.
+
+## Required Variables
+
+At minimum for private GitHub dependencies:
+
+- `GITHUB_TOKEN`
+
+Common additional variables:
+
+- `TWILIO_ACCOUNT_SID`
+- `TWILIO_AUTH_TOKEN`
+- `NGROK_AUTH_TOKEN`
+- `TZ`
+
+## Setup Steps
+
+### Option A (recommended): manual `.devcontainer/.env`
 
 ```bash
-cd ~/Code  # or wherever your workspace is
-.devcontainer/setup-env.sh
-```
-
-This will read your existing environment (including `~/.zshrc.secrets`) and create `.devcontainer/.env`.
-
-**Manual Setup:**
-
-```bash
-cd ~/Code/.devcontainer
+cd /path/to/workspace/.devcontainer
 cp .env.example .env
-# Edit .env and add your actual values
 code .env
 ```
 
-Then **rebuild your devcontainer** for changes to take effect.
+Set at least:
 
-### How It Works
-
-The devcontainer now uses `--env-file` to load environment variables from `.devcontainer/.env`:
-
-- ✅ Works reliably (not dependent on how VS Code was launched)
-- ✅ File is gitignored (won't commit secrets)
-- ✅ Easy to update (just edit the file and rebuild)
-- ✅ Portable (works on Mac, Linux, Windows)
-
-## Alternative Solutions
-
-### Option 2: Use ~/.zshenv on Mac
-
-If you want `${localEnv:...}` to work, move your environment variables to `~/.zshenv` on your Mac:
-
-```bash
-# On your Mac
-echo 'export TWILIO_ACCOUNT_SID="your_value"' >> ~/.zshenv
-echo 'export TWILIO_AUTH_TOKEN="your_value"' >> ~/.zshenv
-# ... etc
+```dotenv
+GITHUB_TOKEN=your_github_pat_here
 ```
 
-Then **launch VS Code from terminal**:
-```bash
-code ~/Code
-```
+Then rebuild the devcontainer.
 
-⚠️ This only works if VS Code inherits the environment, which is unreliable with GUI launches.
-
-### Option 3: Launch VS Code from Terminal Always
+### Option B: bootstrap from your current host environment
 
 ```bash
-# On your Mac
-cd ~/Code
-source ~/.zshrc.secrets  # Load your secrets
-code .                   # Launch VS Code with current environment
+cd /path/to/workspace
+.devcontainer/setup-env.sh
 ```
 
-⚠️ Must remember to do this every time.
+This script can read values already exported in your current shell. If present, it also sources `~/.zshrc.secrets` to help prefill values.
 
-## Recommended Approach
+## Docker Compose Notes
 
-**Use the .env file** (Solution 1). It's the most reliable and portable approach.
+When running `docker compose` inside the devcontainer, the compose secret mapping `environment: GITHUB_TOKEN` reads from the current process environment.
 
-## Verifying It Works
+Because devcontainer startup uses `.devcontainer/.env`, `GITHUB_TOKEN` is available in the container shell and can be forwarded to compose build secrets.
 
-After rebuilding your devcontainer:
+For compose files that also rely on a service env file (for example `voice-core/.env.local`), include it at runtime:
 
 ```bash
-echo $TWILIO_ACCOUNT_SID
-echo $GITHUB_TOKEN
+cd /workspaces/Code/voice-core
+docker compose --env-file .env.local -f docker-compose.local.yml up -d --build --force-recreate
 ```
 
-Should now show your values! 🎉
+`--env-file .env.local` configures application variables. `GITHUB_TOKEN` still comes from the shell environment unless explicitly overridden.
+
+## Verification
+
+After rebuilding the devcontainer:
+
+```bash
+echo "GITHUB_TOKEN length: ${#GITHUB_TOKEN}"
+```
+
+From `voice-core`:
+
+```bash
+docker compose --env-file .env.local -f docker-compose.local.yml config | grep -A3 GITHUB_TOKEN
+```
+
+If token access still fails during build, confirm PAT permissions and SSO authorization for the target organization repositories.
