@@ -75,12 +75,6 @@ RUN node --version && npm --version && npx --version
 # Install UV (Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install .NET SDK (separate layer as it changes less frequently)
-RUN add-apt-repository -y ppa:dotnet/backports && \
-    apt-get update -y && \
-    apt-get install -y dotnet-sdk-9.0 && \
-    /bin/rm -rf /var/lib/apt/lists/*
-
 # Install Terraform (architecture-aware binary install)
 ARG TERRAFORM_VERSION=1.10.5
 RUN arch="$(dpkg --print-architecture)" && \
@@ -120,6 +114,20 @@ RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.1
     mv sops-v3.12.1.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
 
-# DuckDb
-RUN curl https://install.duckdb.org | sh
+# # DuckDb
+# RUN curl https://install.duckdb.org | sh
 
+
+# # Install .NET SDK (separate layer as it changes less frequently)
+# RUN add-apt-repository -y ppa:dotnet/backports && \
+#     apt-get update -y && \
+#     apt-get install -y dotnet-sdk-9.0 && \
+#     /bin/rm -rf /var/lib/apt/lists/*
+# Install .NET SDK 9.0 via Microsoft package feed
+
+# RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft.gpg && \
+#     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/24.04/prod noble main" \
+#     > /etc/apt/sources.list.d/microsoft-prod.list && \
+#     apt-get update -y && \
+#     apt-get install -y dotnet-sdk-9.0 && \
+#     /bin/rm -rf /var/lib/apt/lists/*
