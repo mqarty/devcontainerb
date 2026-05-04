@@ -14,19 +14,23 @@
     "${localWorkspaceFolder}/.devcontainer/.env"
   ],
   "mounts": [
+    "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.claude,target=/root/.claude,type=bind",
+    "source=${localWorkspaceFolder}/dotfiles,target=/root/dotfiles,type=bind",
     "source=gh-config,target=/root/.config/gh,type=volume",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
   "forwardPorts": [
     3000,
+    3001,
     6379,
     4040,
     4566,
     8001,
+    8080,
     8888,
     9090,
     16686
@@ -37,7 +41,7 @@
       "onAutoForward": "notify"
     },
     "3000": {
-      "label": "Grafana",
+      "label": "Pulse",
       "onAutoForward": "notify"
     },
     "6379": {
@@ -54,6 +58,10 @@
     },
     "8001": {
       "label": "DynamoDB Admin UI",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "cohorts-api",
       "onAutoForward": "notify"
     },
     "8888": {
@@ -75,7 +83,8 @@
         "MermaidChart.vscode-mermaid-chart",
         "ms-python.python",
         "ms-azuretools.vscode-docker",
-        "AmazonWebServices.aws-toolkit-vscode"
+        "AmazonWebServices.aws-toolkit-vscode",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
         "chat.mcp.enabled": true,
@@ -120,6 +129,6 @@
     // For Terraform
     "GODEBUG": "netdns=cgo"
   },
-  "postCreateCommand": "bash -lc 'if command -v gh >/dev/null 2>&1 && [ -n \"${GITHUB_TOKEN:-}\" ]; then printf \"%s\" \"${GITHUB_TOKEN}\" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true; gh auth setup-git >/dev/null 2>&1 || true; fi && bash ${containerWorkspaceFolder}/.devcontainer/scripts/poetry-init.sh voice-core'",
+  "postCreateCommand": "bash -lc 'cd /root/dotfiles && bash install.sh && if command -v gh >/dev/null 2>&1 && [ -n \"${GITHUB_TOKEN:-}\" ]; then printf \"%s\" \"${GITHUB_TOKEN}\" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true; gh auth setup-git >/dev/null 2>&1 || true; fi && bash ${containerWorkspaceFolder}/.devcontainer/scripts/poetry-init.sh voice-core'",
   "postStartCommand": "bash -lc 'bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && if command -v gh >/dev/null 2>&1 && [ -n \"${GITHUB_TOKEN:-}\" ]; then printf \"%s\" \"${GITHUB_TOKEN}\" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true; gh auth setup-git >/dev/null 2>&1 || true; fi && if ! grep -qF \"source ${containerWorkspaceFolder}/.devcontainer/aliases.sh\" ~/.zshrc; then echo \"source ${containerWorkspaceFolder}/.devcontainer/aliases.sh\" >> ~/.zshrc; fi'"
 }

@@ -114,6 +114,10 @@ RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.1
     mv sops-v3.12.1.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
 
+# # Install Claude Code CLI
+# RUN npm install -g @anthropic-ai/claude-code
+# RUN claude-code --version
+
 # # DuckDb
 # RUN curl https://install.duckdb.org | sh
 

@@ -6,6 +6,11 @@ WORKSPACE_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 TARGET_DIR="${1:-}"
 
+# Resolve relative paths against the workspace root
+if [[ -n "${TARGET_DIR}" && "${TARGET_DIR}" != /* ]]; then
+	TARGET_DIR="${WORKSPACE_DIR}/${TARGET_DIR}"
+fi
+
 if [[ -z "${TARGET_DIR}" ]]; then
 	mapfile -t PYPROJECT_FILES < <(find "${WORKSPACE_DIR}" -mindepth 2 -maxdepth 3 -type f -name pyproject.toml)
 	for pyproject_file in "${PYPROJECT_FILES[@]}"; do
