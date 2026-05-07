@@ -13,7 +13,8 @@
     "--name",
     "devcontainer-workspace",
     "--env-file",
-    "${localWorkspaceFolder}/.devcontainer/.env"
+    "${localWorkspaceFolder}/.devcontainer/.env",
+    "--privileged"
   ],
   "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
   "mounts": [
