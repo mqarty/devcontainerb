@@ -1,10 +1,12 @@
 {
   "name": "⚡ ⚡ devcontainerb ⚡ ⚡",
+  "overrideCommand": false,
+  "privileged": true,
   "build": {
     "dockerfile": "./Dockerfile"
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   // Load environment variables from .env file (create from .env.example)
   "runArgs": [
@@ -16,10 +18,10 @@
   "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
   "mounts": [
     "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
+    "source=${localWorkspaceFolder}/dotfiles,target=/root/dotfiles,type=bind",
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.claude,target=/root/.claude,type=bind",
-    "source=${localWorkspaceFolder}/dotfiles,target=/root/dotfiles,type=bind",
     "source=gh-config,target=/root/.config/gh,type=volume",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
