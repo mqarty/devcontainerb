@@ -106,6 +106,9 @@ COPY aws-credentials /root/.aws/credentials
 RUN npm install -g --ignore-scripts twilio-cli && \
     twilio plugins:install @twilio-labs/plugin-dev-phone
 
+# Install Claude CLI
+RUN curl -fsSL https://claude.ai/install.sh | bash
+
 RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
 
 # DevOps / Eng Role?
@@ -113,10 +116,6 @@ RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
 RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.amd64 && \
     mv sops-v3.12.1.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
-
-# # Install Claude Code CLI
-# RUN npm install -g @anthropic-ai/claude-code
-# RUN claude-code --version
 
 # # DuckDb
 # RUN curl https://install.duckdb.org | sh

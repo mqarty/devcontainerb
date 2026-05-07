@@ -13,6 +13,7 @@
     "--env-file",
     "${localWorkspaceFolder}/.devcontainer/.env"
   ],
+  "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
   "mounts": [
     "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
@@ -84,7 +85,8 @@
         "ms-python.python",
         "ms-azuretools.vscode-docker",
         "AmazonWebServices.aws-toolkit-vscode",
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        "ms-python.black-formatter"
       ],
       "settings": {
         "chat.mcp.enabled": true,
@@ -115,20 +117,35 @@
               "--rm",
               "hashicorp/terraform-mcp-server"
             ]
+          },
+          "postman": {
+            "type": "http",
+            "url": "https://mcp.postman.com/mcp",
+            "headers": {
+              "Authorization": "${input:Authorization}"
+            },
+            "gallery": "https://api.mcp.github.com",
+            "version": "2.8.7"
+          },
+          "figma": {
+            "type": "http",
+            "url": "https://mcp.figma.com/mcp",
+            "gallery": "https://api.mcp.github.com",
+            "version": "1.0.3"
           }
         }
       }
-    }
-  },
-  "containerEnv": {
-    "HISTFILE": "/root/.zsh_history_container/.zsh_history",
-    "HISTSIZE": "100000",
-    "SAVEHIST": "100000",
-    "AWS_PROFILE": "dev",
-    // The GODEBUG=netdns=cgo forces Go to use the same C DNS resolver that curl/nslookup use, avoiding the UDP timeout issue.
-    // For Terraform
-    "GODEBUG": "netdns=cgo"
-  },
-  "postCreateCommand": "bash -lc 'cd /root/dotfiles && bash install.sh && if command -v gh >/dev/null 2>&1 && [ -n \"${GITHUB_TOKEN:-}\" ]; then printf \"%s\" \"${GITHUB_TOKEN}\" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true; gh auth setup-git >/dev/null 2>&1 || true; fi && bash ${containerWorkspaceFolder}/.devcontainer/scripts/poetry-init.sh voice-core'",
-  "postStartCommand": "bash -lc 'bash ${containerWorkspaceFolder}/.devcontainer/scripts/mark-git-safe.sh && if command -v gh >/dev/null 2>&1 && [ -n \"${GITHUB_TOKEN:-}\" ]; then printf \"%s\" \"${GITHUB_TOKEN}\" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true; gh auth setup-git >/dev/null 2>&1 || true; fi && if ! grep -qF \"source ${containerWorkspaceFolder}/.devcontainer/aliases.sh\" ~/.zshrc; then echo \"source ${containerWorkspaceFolder}/.devcontainer/aliases.sh\" >> ~/.zshrc; fi'"
+    },
+    "containerEnv": {
+      "HISTFILE": "/root/.zsh_history_container/.zsh_history",
+      "HISTSIZE": "100000",
+      "SAVEHIST": "100000",
+      "AWS_PROFILE": "dev",
+      // The GODEBUG=netdns=cgo forces Go to use the same C DNS resolver that curl/nslookup use, avoiding the UDP timeout issue.
+      // For Terraform
+      "GODEBUG": "netdns=cgo"
+    },
+    "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
+    "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'"
+  }
 }
