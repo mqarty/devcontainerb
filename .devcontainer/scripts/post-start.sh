@@ -2,11 +2,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+source "${SCRIPT_DIR}/lib/logger.sh"
+export LOG_TAG="post-start"
 
-log() {
-  echo "[post-start] $*"
-}
+WORKSPACE_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 setup_gh_auth() {
   log "Configuring GitHub CLI authentication"

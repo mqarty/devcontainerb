@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-log() {
-  echo "[ghcr-login] $*"
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/lib/logger.sh"
+export LOG_TAG="ghcr-login"
 
 workspace_root="${1:-}"
 if [[ -z "$workspace_root" ]]; then
