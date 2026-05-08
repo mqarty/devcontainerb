@@ -2,6 +2,12 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get update && apt-get install -y locales && \
+    locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
 # Combine all apt installations to reduce layers and improve caching
 # Order: base tools, then language runtimes, then development tools
 RUN apt-get update -y && \
@@ -26,6 +32,7 @@ RUN apt-get update -y && \
     dnsutils \
     iputils-ping \
     openssh-client \
+    erofs-utils \
     # Development tools
     git \
     gh \
@@ -113,8 +120,9 @@ RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
 
 # DevOps / Eng Role?
 # Install SOPS / assuming mac
-RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.amd64 && \
-    mv sops-v3.12.1.linux.amd64 /usr/local/bin/sops && \
+RUN arch="$(dpkg --print-architecture)" && \
+    curl -LO "https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.${arch}" && \
+    mv "sops-v3.12.1.linux.${arch}" /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
 
 # # DuckDb
@@ -134,3 +142,5 @@ RUN curl -LO https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.1
 #     apt-get update -y && \
 #     apt-get install -y dotnet-sdk-9.0 && \
 #     /bin/rm -rf /var/lib/apt/lists/*
+
+CMD ["sleep", "infinity"]

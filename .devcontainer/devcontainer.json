@@ -1,12 +1,14 @@
 {
   "name": "⚡ ⚡ devcontainerb ⚡ ⚡",
-  "overrideCommand": false,
   "privileged": true,
+  "overrideCommand": false,
   "build": {
     "dockerfile": "./Dockerfile"
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "daemonArgs": "--iptables=false --ip6tables=false" // ✅ fixes iptables on Apple
+    }
   },
   // Load environment variables from .env file (create from .env.example)
   "runArgs": [
@@ -14,9 +16,11 @@
     "devcontainer-workspace",
     "--env-file",
     "${localWorkspaceFolder}/.devcontainer/.env",
-    "--privileged"
+    // "--gpus",
+    // "all",
+    "--cgroupns=host"
   ],
-  "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
+  // "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
   "mounts": [
     "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
     "source=${localWorkspaceFolder}/dotfiles,target=/root/dotfiles,type=bind",
@@ -27,6 +31,17 @@
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
+  "containerEnv": {
+    "HISTFILE": "/root/.zsh_history_container/.zsh_history",
+    "HISTSIZE": "100000",
+    "SAVEHIST": "100000",
+    "AWS_PROFILE": "dev",
+    // The GODEBUG=netdns=cgo forces Go to use the same C DNS resolver that curl/nslookup use, avoiding the UDP timeout issue.
+    // For Terraform
+    "GODEBUG": "netdns=cgo"
+  },
+  // "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
+  // "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
   "forwardPorts": [
     3000,
     3001,
@@ -83,14 +98,6 @@
   },
   "customizations": {
     "vscode": {
-      "extensions": [
-        "MermaidChart.vscode-mermaid-chart",
-        "ms-python.python",
-        "ms-azuretools.vscode-docker",
-        "AmazonWebServices.aws-toolkit-vscode",
-        "tamasfe.even-better-toml",
-        "ms-python.black-formatter"
-      ],
       "settings": {
         "chat.mcp.enabled": true,
         "editor.tabSize": 4,
@@ -138,17 +145,6 @@
           }
         }
       }
-    },
-    "containerEnv": {
-      "HISTFILE": "/root/.zsh_history_container/.zsh_history",
-      "HISTSIZE": "100000",
-      "SAVEHIST": "100000",
-      "AWS_PROFILE": "dev",
-      // The GODEBUG=netdns=cgo forces Go to use the same C DNS resolver that curl/nslookup use, avoiding the UDP timeout issue.
-      // For Terraform
-      "GODEBUG": "netdns=cgo"
-    },
-    "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
-    "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'"
+    }
   }
 }
