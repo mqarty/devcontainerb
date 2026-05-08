@@ -40,8 +40,8 @@
     // For Terraform
     "GODEBUG": "netdns=cgo"
   },
-  // "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
-  // "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
+  "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
+  "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
   "forwardPorts": [
     3000,
     3001,
