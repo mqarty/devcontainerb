@@ -18,10 +18,13 @@
     "${localWorkspaceFolder}/.devcontainer/.env",
     // "--gpus",
     // "all",
-    "--cgroupns=host"
+    "--cgroupns=host",
+    "--env-file",
+    "${localWorkspaceFolder}/.devcontainer/.env"
   ],
   // "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
   "mounts": [
+    "source=shell-history-devcontainerb,target=/root/.shell_history_dir,type=volume",
     "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
     "source=${localWorkspaceFolder}/dotfiles,target=/root/dotfiles,type=bind",
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
@@ -32,9 +35,6 @@
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
   ],
   "containerEnv": {
-    "HISTFILE": "/root/.zsh_history_container/.zsh_history",
-    "HISTSIZE": "100000",
-    "SAVEHIST": "100000",
     "AWS_PROFILE": "dev",
     // The GODEBUG=netdns=cgo forces Go to use the same C DNS resolver that curl/nslookup use, avoiding the UDP timeout issue.
     // For Terraform
