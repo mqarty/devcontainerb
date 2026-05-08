@@ -1,5 +1,5 @@
 name: ${COMPOSE_PROJECT_NAME:-local}
 
 include:
-  - path: ../voice-core/docker-compose.local.yml
-  - path: ../cohorts-api/local/docker-compose.local.yml
+  - path: ../voice-core/local/docker-compose.yml
+  - path: ../cohorts-api/local/docker-compose.yml
