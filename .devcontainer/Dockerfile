@@ -27,7 +27,6 @@ RUN apt-get update -y && \
     fzf \
     tree \
     vim \
-    zsh \
     # Network tools
     dnsutils \
     iputils-ping \

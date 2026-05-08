@@ -101,12 +101,6 @@
       "settings": {
         "chat.mcp.enabled": true,
         "editor.tabSize": 4,
-        "terminal.integrated.defaultProfile.linux": "zsh",
-        "terminal.integrated.profiles.linux": {
-          "zsh": {
-            "path": "zsh"
-          }
-        },
         "extensions.ignoreRecommendations": true,
         "[terraform]": {
           "editor.defaultFormatter": "hashicorp.terraform",
