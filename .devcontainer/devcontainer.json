@@ -122,21 +122,31 @@
               "hashicorp/terraform-mcp-server"
             ]
           },
-          "postman": {
-            "type": "http",
-            "url": "https://mcp.postman.com/mcp",
-            "headers": {
-              "Authorization": "${input:Authorization}"
-            },
-            "gallery": "https://api.mcp.github.com",
-            "version": "2.8.7"
-          },
-          "figma": {
-            "type": "http",
-            "url": "https://mcp.figma.com/mcp",
-            "gallery": "https://api.mcp.github.com",
-            "version": "1.0.3"
-          }
+          // "roark": {
+          //   "command": "npx",
+          //   "args": [
+          //     "-y",
+          //     "@roarkanalytics/sdk-mcp"
+          //   ],
+          //   "env": {
+          //     "ROARK_API_BEARER_TOKEN": "$ROARK_API_KEY"
+          //   }
+          // },
+          // "postman": {
+          //   "type": "http",
+          //   "url": "https://mcp.postman.com/mcp",
+          //   "headers": {
+          //     "Authorization": "${input:Authorization}"
+          //   },
+          //   "gallery": "https://api.mcp.github.com",
+          //   "version": "2.8.7"
+          // },
+          // "figma": {
+          //   "type": "http",
+          //   "url": "https://mcp.figma.com/mcp",
+          //   "gallery": "https://api.mcp.github.com",
+          //   "version": "1.0.3"
+          // }
         }
       }
     }
