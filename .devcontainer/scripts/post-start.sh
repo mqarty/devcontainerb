@@ -39,6 +39,9 @@ log "Git safe.directory setup complete"
 
 setup_gh_auth
 
+log "Authenticating to ghcr.io"
+bash "${WORKSPACE_DIR}/.devcontainer/scripts/ghcr-login.sh" "${WORKSPACE_DIR}"
+
 ensure_aliases_source "$HOME/.zshrc"
 ensure_aliases_source "$HOME/.bashrc"
 

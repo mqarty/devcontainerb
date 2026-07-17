@@ -22,7 +22,9 @@
     "--env-file",
     "${localWorkspaceFolder}/.devcontainer/.env"
   ],
-  // "initializeCommand": "bash -lc 'bash ${localWorkspaceFolder}/.devcontainer/scripts/ghcr-login.sh ${localWorkspaceFolder}'",
+  // ghcr.io login runs inside the container (docker-in-docker) via scripts/post-start.sh,
+  // not here as an initializeCommand — the latter runs on the host and would not
+  // authenticate the in-container docker daemon that `docker compose --build` uses.
   "mounts": [
     "source=shell-history-devcontainerb,target=/root/.shell_history_dir,type=volume",
     "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
@@ -30,6 +32,7 @@
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.claude,target=/root/.claude,type=bind",
+    "source=${localEnv:HOME}/.config/gcloud,target=/root/.config/gcloud,type=bind",
     "source=gh-config,target=/root/.config/gh,type=volume",
     "source=aws-sso-cache,target=/root/.aws/sso,type=volume",
     "source=twilio-config,target=/root/.twilio-cli,type=volume"
@@ -45,9 +48,12 @@
   "forwardPorts": [
     3000,
     3001,
+    3400,
+    3401,
     6379,
     4040,
     4566,
+    8000,
     8001,
     8080,
     8888,
@@ -55,6 +61,14 @@
     16686
   ],
   "portsAttributes": {
+    "3400": {
+      "label": "Librarian Scanner",
+      "onAutoForward": "notify"
+    },
+    "3401": {
+      "label": "Librarian API",
+      "onAutoForward": "notify"
+    },
     "3001": {
       "label": "Twilio Dev Phone",
       "onAutoForward": "notify"
@@ -73,6 +87,10 @@
     },
     "4566": {
       "label": "LocalStack",
+      "onAutoForward": "notify"
+    },
+    "8000": {
+      "label": "Voice Core",
       "onAutoForward": "notify"
     },
     "8001": {
@@ -121,6 +139,19 @@
               "--rm",
               "hashicorp/terraform-mcp-server"
             ]
+          },
+          "posthog": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+              "-y",
+              "@posthog/mcp-server"
+            ],
+            "env": {
+              "POSTHOG_PERSONAL_API_KEY": "blah",
+              "POSTHOG_PROJECT_ID": "12345",
+              "POSTHOG_HOST": "https://us.i.posthog.com"
+            }
           },
           // "roark": {
           //   "command": "npx",

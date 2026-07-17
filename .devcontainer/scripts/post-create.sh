@@ -27,21 +27,21 @@ log "Dotfiles installation complete"
 
 setup_gh_auth
 
-POETRY_REPOS=(voice-core cohorts-api core-models)
+POETRY_REPOS=(voice-core)
 
 for repo in "${POETRY_REPOS[@]}"; do
   log "Initializing Poetry environment for ${repo}"
   bash "${WORKSPACE_DIR}/.devcontainer/scripts/poetry-init.sh" "${repo}"
 done
 
-log "Initializing pre-commit hooks in background for all repos"
-for repo in "${POETRY_REPOS[@]}"; do
-  (
-    cd "${WORKSPACE_DIR}/${repo}"
-    poetry run pre-commit install
-    poetry run pre-commit install-hooks
-  ) >> "/tmp/pre-commit-init-${repo}.log" 2>&1 &
-done
-log "Pre-commit initialization running in background (tail /tmp/pre-commit-init-<repo>.log to monitor)"
+# log "Initializing pre-commit hooks in background for all repos"
+# for repo in "${POETRY_REPOS[@]}"; do
+#   (
+#     cd "${WORKSPACE_DIR}/${repo}"
+#     poetry run pre-commit install
+#     poetry run pre-commit install-hooks
+#   ) >> "/tmp/pre-commit-init-${repo}.log" 2>&1 &
+# done
+# log "Pre-commit initialization running in background (tail /tmp/pre-commit-init-<repo>.log to monitor)"
 
 log "Post-create setup complete"

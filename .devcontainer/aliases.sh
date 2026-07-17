@@ -18,6 +18,7 @@ alias dlogs='docker logs -f'
 alias drestart='docker compose restart'
 alias dlocal='docker compose --profile tools --profile outbound -f local/docker-compose.yml'
 alias dall='docker compose --profile tools --profile outbound -f docker-compose.local.yml up -d --build --force-recreate --remove-orphans'
+alias ddall='docker compose --profile tools --profile outbound -f docker-compose.local.yml down'
 
 # AWS pre-auth wrapper for docker compose
 alias aws-compose='python /workspaces/Code/.devcontainer/tools/aws_compose.py'

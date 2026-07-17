@@ -142,4 +142,16 @@ RUN arch="$(dpkg --print-architecture)" && \
 #     apt-get install -y dotnet-sdk-9.0 && \
 #     /bin/rm -rf /var/lib/apt/lists/*
 
+# Google Cloud CLI
+RUN apt-get update -y
+
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+    | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] \
+    https://packages.cloud.google.com/apt cloud-sdk main" \
+    | tee /etc/apt/sources.list.d/google-cloud-sdk.list
+
+RUN apt-get update -y && apt-get install -y google-cloud-cli
+
 CMD ["sleep", "infinity"]
