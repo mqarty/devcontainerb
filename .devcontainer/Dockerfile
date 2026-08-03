@@ -37,6 +37,7 @@ RUN apt-get update -y && \
     git \
     gh \
     jq \
+    make \
     sudo \
     # Python build dependencies for pyenv
     build-essential \
