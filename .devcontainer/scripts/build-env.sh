@@ -61,4 +61,16 @@ umask 077
 } > "$ENV_FILE"
 chmod 600 "$ENV_FILE"
 
+# This script runs as root inside the container. On WSL, files root writes to
+# the bind-mounted workspace stay root-owned on the host, which breaks host-side
+# tooling (e.g. the devcontainer initializeCommand's touch) and makes .env
+# unreadable/uneditable for the host user. Chown the file back to whoever owns
+# the workspace mount. Docker Desktop for macOS already remaps ownership, so
+# this is effectively a no-op there.
+WS_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+ws_owner="$(stat -c '%u:%g' "${WS_ROOT}" 2>/dev/null || true)"
+if [[ -n "${ws_owner}" && "${ws_owner}" != "0:0" ]]; then
+  chown "${ws_owner}" "$ENV_FILE" 2>/dev/null || true
+fi
+
 log "Wrote ${ENV_FILE}"
