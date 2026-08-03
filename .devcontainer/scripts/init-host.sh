@@ -3,7 +3,7 @@
 # BEFORE the container is created. Its only job: guarantee the env-file that
 # runArgs `--env-file` references exists, so `docker run --env-file` doesn't
 # abort on a fresh checkout. post-create.sh (inside the container) later fills
-# it in by decrypting secrets.enc.json.
+# it in by merging env.defaults + env.local.
 #
 # Keep this resilient and dependency-free: a non-zero exit here aborts the whole
 # container "up". On WSL a prior container run (as root) can leave local/ or
