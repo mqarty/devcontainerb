@@ -29,10 +29,10 @@ cd /root/dotfiles
 bash install.sh
 log "Dotfiles installation complete"
 
-log "Generating .env from SOPS-encrypted secrets"
+log "Assembling .env from env.defaults + env.local"
 bash "${WORKSPACE_DIR}/.devcontainer/scripts/build-env.sh" || true
-# Load the freshly-decrypted secrets so the steps below (gh auth, poetry) see
-# GITHUB_TOKEN even on first creation, when runArgs --env-file read an empty .env.
+# Load the assembled secrets so the steps below (gh auth, poetry) see GITHUB_TOKEN
+# even on first creation, when runArgs --env-file read an empty .env.
 if [[ -f "${WORKSPACE_DIR}/.devcontainer/local/.env" ]]; then
   set -a; source "${WORKSPACE_DIR}/.devcontainer/local/.env"; set +a
   log "Loaded ${WORKSPACE_DIR}/.devcontainer/local/.env into environment"

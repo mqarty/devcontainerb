@@ -1,14 +1,10 @@
 # These patterns have no leading slash, so they match recursively — they cover
-# the files in local/ too (local/.env, local/secrets.json, local/env.local).
+# the files in local/ too (local/.env, local/env.local).
 
 # Generated env-file (built by scripts/build-env.sh) — never commit.
 .env
 
-# Plaintext secrets — never commit. Encrypt to secrets.enc.json with
-# scripts/encrypt-secrets.sh; only the .enc.json is committed.
-secrets.json
-
-# Personal per-developer overrides — never commit (env.local.example is the template).
+# All secrets (shared team + personal) — never commit (env.local.example is the template).
 env.local
 
 # Backups / editor stray copies — may contain real secrets, never commit.

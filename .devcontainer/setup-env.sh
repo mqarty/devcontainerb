@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# LEGACY FALLBACK. The canonical way to build local/.env is SOPS:
-#   cd .devcontainer && make secrets && make encrypt-secrets && make build-env
-# This script instead writes a minimal local/.env from your current shell env,
-# for when sops/AWS aren't available. It does NOT include all secrets.
+# LEGACY FALLBACK. The canonical way to build local/.env is:
+#   cd .devcontainer && cp local/env.local.example local/env.local && $EDITOR local/env.local && make build-env
+# This script instead writes a minimal local/.env from your current shell env.
+# It does NOT include all secrets.
 
 ENV_FILE=".devcontainer/local/.env"
 
@@ -19,7 +19,7 @@ fi
 # Create .env file
 cat > "$ENV_FILE" << EOF
 # Auto-generated from setup-env.sh (legacy fallback)
-# Prefer 'make build-env' (SOPS). Edit manually or re-run script to update.
+# Prefer 'make build-env'. Edit manually or re-run script to update.
 
 GITHUB_TOKEN=${GITHUB_TOKEN:-}
 TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
