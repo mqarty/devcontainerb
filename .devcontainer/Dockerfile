@@ -24,6 +24,7 @@ RUN apt-get update -y && \
     zip \
     # Shell and terminal tools
     bash-completion \
+    zsh \
     fzf \
     tree \
     vim \
@@ -99,10 +100,17 @@ RUN arch="$(dpkg --print-architecture)" && \
 RUN git config --global init.defaultBranch main
 RUN git config --global pull.rebase true
 
-# Install AWS CLI
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
+# Install AWS CLI (architecture-aware binary install)
+RUN arch="$(dpkg --print-architecture)" && \
+    case "$arch" in \
+    amd64) aws_arch="x86_64" ;; \
+    arm64) aws_arch="aarch64" ;; \
+    *) echo "Unsupported architecture: $arch" && exit 1 ;; \
+    esac && \
+    curl -fsSLo /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-${aws_arch}.zip" && \
+    unzip -o /tmp/awscliv2.zip -d /tmp && \
+    /tmp/aws/install && \
+    rm -rf /tmp/aws /tmp/awscliv2.zip && \
     aws --version
 COPY aws-config /root/.aws/config
 COPY aws-credentials /root/.aws/credentials

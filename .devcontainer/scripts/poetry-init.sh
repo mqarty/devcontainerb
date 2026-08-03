@@ -22,40 +22,51 @@ if [[ -z "${TARGET_DIR}" ]]; then
 fi
 
 if [[ -z "${TARGET_DIR}" ]]; then
-	echo "Unable to locate a Poetry project with name=\"voice-core\" under ${WORKSPACE_DIR}."
+	echo "Unable to locate a Python project with name=\"voice-core\" under ${WORKSPACE_DIR}."
 	echo "Pass the target directory explicitly: bash ${BASH_SOURCE[0]} /path/to/project"
 	exit 1
 fi
 
-configure_github_git_auth() {
-	if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-		echo "GITHUB_TOKEN not set; skipping git https://github.com alias setup."
-		return
-	fi
-
-	git config --global --unset-all url."https://github.com/".insteadof >/dev/null 2>&1 || true
-	git config --global credential.helper store
-	printf 'https://x-access-token:%s@github.com\n' "${GITHUB_TOKEN}" > "$HOME/.git-credentials"
-	git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-}
-
 cd "${TARGET_DIR}"
 
-configure_github_git_auth
+if grep -Eq '^\[project\]' pyproject.toml; then
+	if ! command -v uv >/dev/null 2>&1; then
+		echo "uv not found on PATH; attempting bootstrap install..."
+		if command -v pipx >/dev/null 2>&1; then
+			pipx install uv >/dev/null 2>&1 || pipx upgrade uv >/dev/null 2>&1
+		else
+			python3 -m pip install --user uv
+		fi
+		export PATH="$HOME/.local/bin:${PATH}"
+		if ! command -v uv >/dev/null 2>&1; then
+			echo "Failed to install uv; cannot initialize PEP 621 project at ${TARGET_DIR}."
+			exit 1
+		fi
+	fi
 
-export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
-export PATH="${PYENV_ROOT}/bin:${PATH}"
+	# Prefer the dev dependency group when available, otherwise sync default deps.
+	if grep -Eq '^\[dependency-groups\]' pyproject.toml && grep -Eq '^[[:space:]]*dev[[:space:]]*=' pyproject.toml; then
+		uv sync --group dev --python 3.11
+	else
+		uv sync --python 3.11
+	fi
+elif grep -Eq '^\[tool\.poetry\]' pyproject.toml; then
+	export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
+	export PATH="${PYENV_ROOT}/bin:${PATH}"
 
-if command -v pyenv >/dev/null 2>&1; then
-	eval "$(pyenv init -)"
-	pyenv install -s 3.11
+	if command -v pyenv >/dev/null 2>&1; then
+		eval "$(pyenv init -)"
+		pyenv install -s 3.11
+	else
+		echo "pyenv not found on PATH. Please install pyenv before running this script."
+		exit 1
+	fi
+
+	poetry env use 3.11
+	poetry install
 else
-	echo "pyenv not found on PATH. Please install pyenv before running this script."
+	echo "No supported project metadata found in ${TARGET_DIR}/pyproject.toml."
 	exit 1
 fi
 
-poetry env use 3.11
-
-POETRY_SYSTEM_GIT_CLIENT=true poetry install
-
-echo "Environment setup complete for ${TARGET_DIR}."
+echo "Python environment setup complete for ${TARGET_DIR}."
