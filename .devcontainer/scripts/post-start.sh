@@ -41,7 +41,7 @@ log "Marking git repositories as safe"
 bash "${WORKSPACE_DIR}/.devcontainer/scripts/mark-git-safe.sh"
 log "Git safe.directory setup complete"
 
-# Load SOPS-generated secrets so gh auth / ghcr login see them on every start.
+# Load the assembled .env so gh auth / ghcr login see the secrets on every start.
 if [[ -f "${WORKSPACE_DIR}/.devcontainer/local/.env" ]]; then
   set -a; source "${WORKSPACE_DIR}/.devcontainer/local/.env"; set +a
   log "Loaded ${WORKSPACE_DIR}/.devcontainer/local/.env into environment"

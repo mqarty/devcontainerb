@@ -11,7 +11,7 @@
     }
   },
   // Load environment variables from the generated env-file (local/.env — built by
-  // scripts/build-env.sh from local/secrets.enc.json + local/env.defaults + local/env.local)
+  // scripts/build-env.sh by merging local/env.defaults + local/env.local)
   "runArgs": [
     "--name",
     "devcontainer-workspace",
@@ -25,8 +25,9 @@
   ],
   // Ensure the env-file exists on the host before `docker run --env-file` (runArgs above)
   // reads it. It starts empty on first creation; post-create.sh then populates it by
-  // decrypting secrets.enc.json (SOPS) inside the container. `touch` needs no host tooling.
-  "initializeCommand": "touch '${localWorkspaceFolder}/.devcontainer/local/.env'",
+  // merging env.defaults + env.local inside the container. init-host.sh is resilient
+  // and, on WSL, prints the exact chown fix if a prior root-owned run blocks creation.
+  "initializeCommand": "bash '${localWorkspaceFolder}/.devcontainer/scripts/init-host.sh'",
   // ghcr.io login runs inside the container (docker-in-docker) via scripts/post-start.sh,
   // not here as an initializeCommand — the latter runs on the host and would not
   // authenticate the in-container docker daemon that `docker compose --build` uses.
@@ -163,7 +164,7 @@
           "posthog": {
             "type": "stdio",
             // POSTHOG_PERSONAL_API_KEY is a secret — it is NOT hardcoded here. The wrapper
-            // sources the SOPS-generated .env at launch so the key never lives in this file.
+            // sources the generated .env at launch so the key never lives in this file.
             // ${containerWorkspaceFolder} is substituted by the devcontainer tooling (same as
             // runArgs --env-file uses ${localWorkspaceFolder}), so no path is hardcoded.
             "command": "bash",
