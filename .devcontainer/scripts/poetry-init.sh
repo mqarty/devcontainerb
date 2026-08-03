@@ -27,7 +27,21 @@ if [[ -z "${TARGET_DIR}" ]]; then
 	exit 1
 fi
 
+configure_github_git_auth() {
+	if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+		echo "GITHUB_TOKEN not set; skipping git https://github.com alias setup."
+		return
+	fi
+
+	git config --global --unset-all url."https://github.com/".insteadof >/dev/null 2>&1 || true
+	git config --global credential.helper store
+	printf 'https://x-access-token:%s@github.com\n' "${GITHUB_TOKEN}" > "$HOME/.git-credentials"
+	git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+}
+
 cd "${TARGET_DIR}"
+
+configure_github_git_auth
 
 export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
 export PATH="${PYENV_ROOT}/bin:${PATH}"
@@ -42,6 +56,6 @@ fi
 
 poetry env use 3.11
 
-poetry install
+POETRY_SYSTEM_GIT_CLIENT=true poetry install
 
 echo "Environment setup complete for ${TARGET_DIR}."

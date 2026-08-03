@@ -1,0 +1,9 @@
+creation_rules:
+  # secrets.json / secrets.enc.json in .devcontainer. The path_regex matches both the
+  # plaintext and encrypted names so `sops -e secrets.json` resolves a rule. JSON keys
+  # stay plaintext so the file is auditable without decrypting; only values whose key
+  # matches encrypted_regex are encrypted.
+  - path_regex: (^|/)secrets(\.enc)?\.json$
+    kms: arn:aws:kms:us-east-1:050752626999:alias/rg-dev-sops
+    # .*TOKEN (not .*_TOKEN) so NGROK_AUTHTOKEN — no underscore before TOKEN — is also encrypted.
+    encrypted_regex: ^(.*TOKEN|.*_SECRET|.*_KEY|.*_PASSWORD|.*_API_KEY|TWILIO_ACCOUNT_SID)$

@@ -10,18 +10,23 @@
       "daemonArgs": "--iptables=false --ip6tables=false" // ✅ fixes iptables on Apple
     }
   },
-  // Load environment variables from .env file (create from .env.example)
+  // Load environment variables from the generated env-file (local/.env — built by
+  // scripts/build-env.sh from local/secrets.enc.json + local/env.defaults + local/env.local)
   "runArgs": [
     "--name",
     "devcontainer-workspace",
     "--env-file",
-    "${localWorkspaceFolder}/.devcontainer/.env",
+    "${localWorkspaceFolder}/.devcontainer/local/.env",
     // "--gpus",
     // "all",
     "--cgroupns=host",
     "--env-file",
-    "${localWorkspaceFolder}/.devcontainer/.env"
+    "${localWorkspaceFolder}/.devcontainer/local/.env"
   ],
+  // Ensure the env-file exists on the host before `docker run --env-file` (runArgs above)
+  // reads it. It starts empty on first creation; post-create.sh then populates it by
+  // decrypting secrets.enc.json (SOPS) inside the container. `touch` needs no host tooling.
+  "initializeCommand": "touch '${localWorkspaceFolder}/.devcontainer/local/.env'",
   // ghcr.io login runs inside the container (docker-in-docker) via scripts/post-start.sh,
   // not here as an initializeCommand — the latter runs on the host and would not
   // authenticate the in-container docker daemon that `docker compose --build` uses.
@@ -58,7 +63,8 @@
     8080,
     8888,
     9090,
-    16686
+    16686,
+    5173
   ],
   "portsAttributes": {
     "3400": {
@@ -142,13 +148,16 @@
           },
           "posthog": {
             "type": "stdio",
-            "command": "npx",
+            // POSTHOG_PERSONAL_API_KEY is a secret — it is NOT hardcoded here. The wrapper
+            // sources the SOPS-generated .env at launch so the key never lives in this file.
+            // ${containerWorkspaceFolder} is substituted by the devcontainer tooling (same as
+            // runArgs --env-file uses ${localWorkspaceFolder}), so no path is hardcoded.
+            "command": "bash",
             "args": [
-              "-y",
-              "@posthog/mcp-server"
+              "-lc",
+              "set -a; [ -f ${containerWorkspaceFolder}/.devcontainer/local/.env ] && . ${containerWorkspaceFolder}/.devcontainer/local/.env; set +a; exec npx -y @posthog/mcp-server"
             ],
             "env": {
-              "POSTHOG_PERSONAL_API_KEY": "blah",
               "POSTHOG_PROJECT_ID": "12345",
               "POSTHOG_HOST": "https://us.i.posthog.com"
             }

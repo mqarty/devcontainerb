@@ -12,6 +12,10 @@ setup_gh_auth() {
   if command -v gh >/dev/null 2>&1 && [[ -n "${GITHUB_TOKEN:-}" ]]; then
     printf '%s' "${GITHUB_TOKEN}" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true
     gh auth setup-git >/dev/null 2>&1 || true
+    git config --global --unset-all url."https://github.com/".insteadof >/dev/null 2>&1 || true
+    git config --global credential.helper store
+    printf 'https://x-access-token:%s@github.com\n' "${GITHUB_TOKEN}" > "$HOME/.git-credentials"
+    git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
     log "GitHub CLI authentication configured"
   else
     log "Skipping GitHub CLI authentication (gh or GITHUB_TOKEN missing)"
@@ -24,6 +28,15 @@ log "Installing dotfiles"
 cd /root/dotfiles
 bash install.sh
 log "Dotfiles installation complete"
+
+log "Generating .env from SOPS-encrypted secrets"
+bash "${WORKSPACE_DIR}/.devcontainer/scripts/build-env.sh" || true
+# Load the freshly-decrypted secrets so the steps below (gh auth, poetry) see GITHUB_TOKEN
+# even on first creation, when runArgs --env-file read an empty .env.
+if [[ -f "${WORKSPACE_DIR}/.devcontainer/local/.env" ]]; then
+  set -a; source "${WORKSPACE_DIR}/.devcontainer/local/.env"; set +a
+  log "Loaded ${WORKSPACE_DIR}/.devcontainer/local/.env into environment"
+fi
 
 setup_gh_auth
 

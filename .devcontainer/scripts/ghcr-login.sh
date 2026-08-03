@@ -14,7 +14,7 @@ fi
 
 log "Attempting to authenticate to ghcr.io"
 
-env_file="$workspace_root/.devcontainer/.env"
+env_file="$workspace_root/.devcontainer/local/.env"
 if [[ ! -f "$env_file" ]]; then
   log "No .env file found; skipping ghcr login"
   exit 0

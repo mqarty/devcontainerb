@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Helper script to create .env from currently available host environment values.
-# This is a convenience script; users can always edit .devcontainer/.env manually.
+# LEGACY FALLBACK. The canonical way to build local/.env is SOPS:
+#   cd .devcontainer && make secrets && make encrypt-secrets && make build-env
+# This script instead writes a minimal local/.env from your current shell env,
+# for when sops/AWS aren't available. It does NOT include all secrets.
 
-ENV_FILE=".devcontainer/.env"
+ENV_FILE=".devcontainer/local/.env"
 
 echo "Creating $ENV_FILE from your current environment..."
 
@@ -16,13 +18,13 @@ fi
 
 # Create .env file
 cat > "$ENV_FILE" << EOF
-# Auto-generated from setup-env.sh
-# Edit manually or re-run script to update
+# Auto-generated from setup-env.sh (legacy fallback)
+# Prefer 'make build-env' (SOPS). Edit manually or re-run script to update.
 
 GITHUB_TOKEN=${GITHUB_TOKEN:-}
 TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
 TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
-NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN:-}
+NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN:-}
 TZ=${TZ:-America/Los_Angeles}
 
 # History settings (optional - already in containerEnv)
