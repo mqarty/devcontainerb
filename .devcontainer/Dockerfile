@@ -126,6 +126,15 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 
 RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
 
+# SOPS — required by OTHER repos' local secret pipelines that run inside this
+# shared devcontainer (e.g. the workflows repo's `make local-env` decrypts
+# local/secrets.enc.json for the team Twilio secrets). devcontainerb itself no
+# longer uses SOPS, but the image is shared across repos that still do.
+RUN arch="$(dpkg --print-architecture)" && \
+    curl -LO "https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.${arch}" && \
+    mv "sops-v3.12.1.linux.${arch}" /usr/local/bin/sops && \
+    chmod +x /usr/local/bin/sops
+
 # # DuckDb
 # RUN curl https://install.duckdb.org | sh
 
