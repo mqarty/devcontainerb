@@ -53,6 +53,7 @@
   "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
   "forwardPorts": [
     80,
+    8081,
     2019,
     3000,
     3001,
@@ -73,6 +74,10 @@
   "portsAttributes": {
     "80": {
       "label": "Caddy (Local Reverse Proxy)",
+      "onAutoForward": "notify"
+    },
+    "8081": {
+      "label": "Caddy (non-privileged alias, use this on macOS)",
       "onAutoForward": "notify"
     },
     "2019": {
