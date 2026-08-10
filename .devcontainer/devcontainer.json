@@ -52,10 +52,14 @@
   "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
   "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
   "forwardPorts": [
+    80,
+    8081,
+    2019,
     3000,
     3001,
     3400,
     3401,
+    5173,
     6379,
     4040,
     4566,
@@ -63,25 +67,37 @@
     8001,
     8080,
     8888,
+    9000,
     9090,
-    16686,
-    5173
+    16686
   ],
   "portsAttributes": {
-    "3400": {
-      "label": "Librarian Scanner",
+    "80": {
+      "label": "Caddy (Local Reverse Proxy)",
       "onAutoForward": "notify"
     },
-    "3401": {
-      "label": "Librarian API",
+    "8081": {
+      "label": "Caddy (non-privileged alias, use this on macOS)",
+      "onAutoForward": "notify"
+    },
+    "2019": {
+      "label": "Caddy Admin API",
+      "onAutoForward": "notify"
+    },
+    "3000": {
+      "label": "Pulse",
       "onAutoForward": "notify"
     },
     "3001": {
       "label": "Twilio Dev Phone",
       "onAutoForward": "notify"
     },
-    "3000": {
-      "label": "Pulse",
+    "3400": {
+      "label": "Librarian Scanner",
+      "onAutoForward": "notify"
+    },
+    "3401": {
+      "label": "Librarian API",
       "onAutoForward": "notify"
     },
     "6379": {
@@ -94,6 +110,10 @@
     },
     "4566": {
       "label": "LocalStack",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Dev Server (Vite/etc)",
       "onAutoForward": "notify"
     },
     "8000": {
@@ -114,6 +134,10 @@
     },
     "9090": {
       "label": "Prometheus",
+      "onAutoForward": "notify"
+    },
+    "9000": {
+      "label": "Workflows Webhooks",
       "onAutoForward": "notify"
     },
     "16686": {
