@@ -69,10 +69,13 @@ RUN apt-get update -y && \
 
 RUN pipx install pre-commit
 
-# Install Node.js 20.x for Twilio CLI compatibility
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+# Install Node.js 22.x (current LTS) for Twilio CLI compatibility
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     /bin/rm -rf /var/lib/apt/lists/*
+
+# Upgrade npm to latest major (nodesource ships 10.x)
+RUN npm install -g npm@12.0.2
 
 # Install pyenv
 RUN curl https://pyenv.run | bash

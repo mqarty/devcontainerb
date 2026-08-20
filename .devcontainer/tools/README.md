@@ -141,29 +141,25 @@ twilio phone-numbers:list
 
 Or visit: https://console.twilio.com/us1/develop/phone-numbers/manage/incoming
 
-## aws_compose.py
+## Native AWS + Compose workflow
 
-Pre-auth AWS SSO and then run `docker compose`.
+Prefer native AWS CLI SSO auth with standard `docker compose` commands.
 
 ### Usage
 
 ```bash
-# From workspace root
-python .devcontainer/tools/aws_compose.py up
-python .devcontainer/tools/aws_compose.py up --build
-python .devcontainer/tools/aws_compose.py logs -f app
+# Authenticate profile (refreshes ~/.aws/sso/cache)
+aws sso login --profile dev
 
-# With a different profile
-AWS_PROFILE=staging python .devcontainer/tools/aws_compose.py up
-
-# Dry run (show commands only)
-python .devcontainer/tools/aws_compose.py --dry-run up --build
+# Then run compose normally
+docker compose up -d --build --force-recreate
+docker compose logs -f app
+docker compose down
 ```
 
-### Flags
-- `--profile`, `-p` (env: AWS_PROFILE, default: dev)
-- `--dry-run` (show commands, do not execute)
+From `fullstack_local_runner`, you can also use:
 
-### Notes
-- If `aws login` fails, the script exits with that code and does not run docker compose.
-- Requires `typer` in the devcontainer Python env (`pip install typer`).
+```bash
+make login dev
+make login prod
+```

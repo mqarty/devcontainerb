@@ -2,12 +2,12 @@
 """AWS SSO pre-auth wrapper for docker compose.
 
 Usage:
-  python .devcontainer/tools/aws_compose.py up
-  python .devcontainer/tools/aws_compose.py up --build
-  python .devcontainer/tools/aws_compose.py logs -f app
+    python3 .devcontainer/tools/aws_compose.py up
+    python3 .devcontainer/tools/aws_compose.py up --build
+    python3 .devcontainer/tools/aws_compose.py logs -f app
 
 Environment:
-    AWS_PROFILE (default: dev) - profile passed to `aws login --profile <profile>`
+    AWS_PROFILE (default: dev) - profile passed to `aws sso login --profile <profile>`
 
 Notes:
   - Authenticates with AWS SSO, exports credentials, and forwards arguments to `docker compose`.
@@ -96,9 +96,11 @@ def compose(
     ctx: typer.Context,
     aws_profile: str = typer.Option(
         "dev",
+        "--profile",
+        "-p",
         "--aws-profile",
         envvar="AWS_PROFILE",
-        help="AWS profile for aws login/export",
+        help="AWS profile for aws sso login/export",
     ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show commands without executing"
@@ -108,25 +110,25 @@ def compose(
     compose_args = ctx.args
     if not compose_args:
         typer.echo(
-            "Usage: python .devcontainer/tools/aws_compose.py <docker compose args>"
+            "Usage: python3 .devcontainer/tools/aws_compose.py <docker compose args>"
         )
         raise typer.Exit(code=1)
 
     compose_cmd = ["docker", "compose", *compose_args]
 
-    # Skip AWS login for commands that don't need credentials
+    # Skip AWS auth refresh for commands that don't need credentials
     skip_login_commands = ["down", "ps", "logs", "stop", "kill", "rm"]
     needs_login = not any(cmd in compose_args for cmd in skip_login_commands)
 
     if needs_login:
         # Check if credentials are already valid before logging in
         if credentials_are_expired(aws_profile):
-            login_cmd = ["aws", "login", "--profile", aws_profile]
+            login_cmd = ["aws", "sso", "login", "--profile", aws_profile]
             typer.echo(f"🔐 Credentials expired. Running: {' '.join(login_cmd)}")
             if not dry_run:
                 login_rc = run_cmd(login_cmd)
                 if login_rc != 0:
-                    typer.echo(f"❌ aws login failed with exit code {login_rc}")
+                    typer.echo(f"❌ aws sso login failed with exit code {login_rc}")
                     raise typer.Exit(code=login_rc)
             else:
                 typer.echo("(dry-run) skipping execution")
@@ -141,7 +143,7 @@ def compose(
             env = os.environ.copy()
             typer.echo("(dry-run) skipping credential export")
     else:
-        typer.echo(f"⏩ Skipping AWS login for '{compose_args[0]}' command")
+        typer.echo(f"⏩ Skipping AWS auth refresh for '{compose_args[0]}' command")
         env = os.environ.copy()
         # Set dummy AWS vars to prevent docker-compose warnings
         env.setdefault("AWS_ACCESS_KEY_ID", "")

@@ -20,9 +20,9 @@ alias dlocal='docker compose --profile tools --profile outbound -f local/docker-
 alias dall='docker compose --profile tools --profile outbound -f docker-compose.local.yml up -d --build --force-recreate --remove-orphans'
 alias ddall='docker compose --profile tools --profile outbound -f docker-compose.local.yml down'
 
-# AWS pre-auth wrapper for docker compose
-alias aws-compose='python /workspaces/Code/.devcontainer/tools/aws_compose.py'
-alias dcu='aws-compose up'
+# Native docker compose helpers (authenticate with `aws sso login --profile ...` first)
+alias aws-compose='docker compose'
+alias dcu='docker compose up'
 
 # Twilio CLI shortcuts
 alias twilio-list-numbers='twilio phone-numbers:list'
