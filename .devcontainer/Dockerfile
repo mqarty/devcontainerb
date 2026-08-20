@@ -86,6 +86,19 @@ RUN node --version && npm --version && npx --version
 # Install UV (Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Install SOPS for decrypting repository-managed local secrets
+ARG SOPS_VERSION=3.13.3
+RUN arch="$(dpkg --print-architecture)" && \
+    case "$arch" in \
+    amd64) sops_arch="amd64" ;; \
+    arm64) sops_arch="arm64" ;; \
+    *) echo "Unsupported architecture: $arch" && exit 1 ;; \
+    esac && \
+    curl -fsSLo /tmp/sops "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${sops_arch}" && \
+    install -m 0755 /tmp/sops /usr/local/bin/sops && \
+    rm -f /tmp/sops && \
+    sops --version
+
 # Install Terraform (architecture-aware binary install)
 ARG TERRAFORM_VERSION=1.10.5
 RUN arch="$(dpkg --print-architecture)" && \

@@ -66,6 +66,7 @@
     8000,
     8001,
     8080,
+    8233,
     8888,
     9000,
     9090,
@@ -128,6 +129,10 @@
       "label": "cohorts-api",
       "onAutoForward": "notify"
     },
+    "8233": {
+      "label": "Temporal UI",
+      "onAutoForward": "notify"
+    },
     "8888": {
       "label": "Jupyter Notebook",
       "onAutoForward": "notify"
@@ -150,7 +155,6 @@
       "extensions": [
         "ms-python.python",
         "charliermarsh.ruff",
-        "github.copilot-chat",
         "streetsidesoftware.code-spell-checker",
         "postman.postman-for-vscode",
         "ms-toolsai.jupyter"
