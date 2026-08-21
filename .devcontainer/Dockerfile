@@ -69,8 +69,8 @@ RUN apt-get update -y && \
 
 RUN pipx install pre-commit
 
-# Install Node.js 22.x (current LTS) for Twilio CLI compatibility
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+# Install Node.js 24.x (required by pulse's devEngines.runtime >=24.0.0)
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y nodejs && \
     /bin/rm -rf /var/lib/apt/lists/*
 
