@@ -21,7 +21,17 @@
     // "all",
     "--cgroupns=host",
     "--env-file",
-    "${localWorkspaceFolder}/.devcontainer/local/.env"
+    "${localWorkspaceFolder}/.devcontainer/local/.env",
+    // Map service names and domains to localhost for Caddy routing
+    "--add-host", "rg.localhost:127.0.0.1",
+    "--add-host", "pulse.rg.localhost:127.0.0.1",
+    "--add-host", "cohorts.rg.localhost:127.0.0.1",
+    "--add-host", "voice-core.rg.localhost:127.0.0.1",
+    "--add-host", "workflows.rg.localhost:127.0.0.1",
+    "--add-host", "pulse:127.0.0.1",
+    "--add-host", "cohorts-api:127.0.0.1",
+    "--add-host", "voice-core:127.0.0.1",
+    "--add-host", "workflows-webhooks:127.0.0.1"
   ],
   // Ensure the env-file exists on the host before `docker run --env-file` (runArgs above)
   // reads it. It starts empty on first creation; post-create.sh then populates it by
@@ -53,6 +63,7 @@
   "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
   "forwardPorts": [
     80,
+    443,
     8081,
     2019,
     3000,
@@ -74,6 +85,10 @@
   ],
   "portsAttributes": {
     "80": {
+      "label": "Caddy (Local Reverse Proxy)",
+      "onAutoForward": "notify"
+    },
+    "443": {
       "label": "Caddy (Local Reverse Proxy)",
       "onAutoForward": "notify"
     },
