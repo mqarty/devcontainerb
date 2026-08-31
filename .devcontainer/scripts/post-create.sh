@@ -17,9 +17,27 @@ setup_gh_auth() {
     log "Skipping GitHub CLI authentication (gh or GITHUB_TOKEN missing)"
   fi
 
-  # Configure git to use SSH for GitHub URLs (private repo access, no terminal prompt needed)
-  log "Configuring git to use SSH for GitHub"
-  git config --global url."git@github.com:".insteadOf "https://github.com/" || true
+  # Some networks block SSH (port 22), which breaks git/uv fetches over an
+  # unconditional insteadOf rewrite. Only prefer SSH if it's actually reachable;
+  # otherwise keep HTTPS, which gh auth setup-git already wired up with a token.
+  if timeout 5 ssh -T -o BatchMode=yes -o StrictHostKeyChecking=no git@github.com >/dev/null 2>&1; [[ $? -eq 1 ]]; then
+    log "Configuring git to use SSH for GitHub"
+    git config --global url."git@github.com:".insteadOf "https://github.com/" || true
+  else
+    log "SSH to github.com unavailable; keeping HTTPS for GitHub URLs"
+    git config --global --unset url."git@github.com:".insteadOf 2>/dev/null || true
+  fi
+}
+
+mark_repos_safe() {
+  # Workspace repos are owned by the host user, not root, so git refuses to use them.
+  log "Marking workspace repositories as git safe directories"
+  for repo in "${WORKSPACE_DIR}"/*; do
+    if [[ -e "${repo}/.git" ]]; then
+      git config --global --get-all safe.directory | grep -Fxq "${repo}" || \
+        git config --global --add safe.directory "${repo}"
+    fi
+  done
 }
 
 install_pre_commit_hooks() {
@@ -27,7 +45,7 @@ install_pre_commit_hooks() {
   for repo in "${WORKSPACE_DIR}"/*; do
     if [[ -d "${repo}/.git" && -f "${repo}/.pre-commit-config.yaml" ]]; then
       log "Installing pre-commit hook in ${repo##*/}"
-      (cd "${repo}" && pre-commit install)
+      (cd "${repo}" && pre-commit install) || log "WARNING: pre-commit install failed in ${repo##*/}"
     fi
   done
 }
@@ -58,6 +76,7 @@ if command -v zsh >/dev/null 2>&1; then
 fi
 
 setup_gh_auth
+mark_repos_safe
 install_pre_commit_hooks
 
 PYTHON_ENV_REPOS=(voice-core)
