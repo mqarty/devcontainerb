@@ -22,6 +22,16 @@ setup_gh_auth() {
   git config --global url."git@github.com:".insteadOf "https://github.com/" || true
 }
 
+install_pre_commit_hooks() {
+  log "Installing pre-commit hooks for repositories with pre-commit configuration"
+  for repo in "${WORKSPACE_DIR}"/*; do
+    if [[ -d "${repo}/.git" && -f "${repo}/.pre-commit-config.yaml" ]]; then
+      log "Installing pre-commit hook in ${repo##*/}"
+      (cd "${repo}" && pre-commit install)
+    fi
+  done
+}
+
 log "Starting post-create setup"
 
 log "Installing dotfiles"
@@ -48,6 +58,7 @@ if command -v zsh >/dev/null 2>&1; then
 fi
 
 setup_gh_auth
+install_pre_commit_hooks
 
 PYTHON_ENV_REPOS=(voice-core)
 
@@ -55,15 +66,5 @@ for repo in "${PYTHON_ENV_REPOS[@]}"; do
   log "Initializing Python environment (uv/poetry auto-detect) for ${repo}"
   bash "${WORKSPACE_DIR}/.devcontainer/scripts/poetry-init.sh" "${repo}"
 done
-
-# log "Initializing pre-commit hooks in background for all repos"
-# for repo in "${PYTHON_ENV_REPOS[@]}"; do
-#   (
-#     cd "${WORKSPACE_DIR}/${repo}"
-#     uv run pre-commit install
-#     uv run pre-commit install-hooks
-#   ) >> "/tmp/pre-commit-init-${repo}.log" 2>&1 &
-# done
-# log "Pre-commit initialization running in background (tail /tmp/pre-commit-init-<repo>.log to monitor)"
 
 log "Post-create setup complete"

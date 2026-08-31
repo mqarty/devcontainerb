@@ -34,6 +34,7 @@ RUN apt-get update -y && \
     openssh-client \
     erofs-utils \
     # Development tools
+    caddy \
     git \
     gh \
     jq \
@@ -68,6 +69,7 @@ RUN apt-get update -y && \
     /bin/rm -rf /var/lib/apt/lists/*
 
 RUN pipx install pre-commit
+ENV PATH="/root/.local/bin:${PATH}"
 
 # Install Node.js 24.x (required by pulse's devEngines.runtime >=24.0.0)
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \

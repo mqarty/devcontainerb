@@ -117,7 +117,7 @@
       "label": "Dev Server (Vite/etc)",
       "onAutoForward": "notify"
     },
-    "8000": {
+    "8004": {
       "label": "Voice Core",
       "onAutoForward": "notify"
     },
