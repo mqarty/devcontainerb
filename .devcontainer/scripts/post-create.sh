@@ -59,7 +59,7 @@ log "Dotfiles installation complete"
 
 log "Assembling .env from env.defaults + env.local"
 bash "${WORKSPACE_DIR}/.devcontainer/scripts/build-env.sh" || true
-# Load the assembled secrets so the steps below (gh auth, poetry) see GITHUB_TOKEN
+# Load the assembled secrets so the steps below (gh auth, uv) see GITHUB_TOKEN
 # even on first creation, when runArgs --env-file read an empty .env.
 if [[ -f "${WORKSPACE_DIR}/.devcontainer/local/.env" ]]; then
   set -a; source "${WORKSPACE_DIR}/.devcontainer/local/.env"; set +a
@@ -79,11 +79,11 @@ setup_gh_auth
 mark_repos_safe
 install_pre_commit_hooks
 
-PYTHON_ENV_REPOS=(voice-core)
+UV_SYNC_REPOS=(voice-core)
 
-for repo in "${PYTHON_ENV_REPOS[@]}"; do
-  log "Initializing Python environment (uv/poetry auto-detect) for ${repo}"
-  bash "${WORKSPACE_DIR}/.devcontainer/scripts/poetry-init.sh" "${repo}"
+for repo in "${UV_SYNC_REPOS[@]}"; do
+  log "Syncing uv dependencies for ${repo}"
+  bash "${WORKSPACE_DIR}/.devcontainer/scripts/uv-sync.sh" "${repo}"
 done
 
 log "Post-create setup complete"

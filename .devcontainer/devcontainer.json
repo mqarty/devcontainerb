@@ -7,7 +7,7 @@
   },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "daemonArgs": "--iptables=false --ip6tables=false" // ✅ fixes iptables on Apple
+      "daemonArgs": "--iptables=false --ip6tables=false"
     }
   },
   // Publish privileged ports (80/443) to the host via Docker Desktop.
@@ -187,8 +187,7 @@
         "ms-python.python",
         "charliermarsh.ruff",
         "streetsidesoftware.code-spell-checker",
-        "postman.postman-for-vscode",
-        "ms-toolsai.jupyter"
+        "postman.postman-for-vscode"
       ],
       "settings": {
         "chat.mcp.enabled": true,
