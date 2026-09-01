@@ -11,10 +11,9 @@ if [ ! -d "$ROOT_DIR" ]; then
   exit 0
 fi
 
-find "$ROOT_DIR" -type d -name .git -print 2>/dev/null | while read -r gitdir; do
+timeout 10 find "$ROOT_DIR" -maxdepth 3 -type d -name .git -print 2>/dev/null | while IFS= read -r gitdir; do
   repo_dir=$(dirname "$gitdir")
-  echo "Marking safe.directory: $repo_dir"
-  git -C "$repo_dir" config --global --add safe.directory "$repo_dir" || true
-done
+  git config --global --add safe.directory "$repo_dir" 2>/dev/null || true
+done || true
 
 echo "Done marking git safe directories."
