@@ -40,27 +40,12 @@ RUN apt-get update -y && \
     jq \
     make \
     sudo \
-    # Python build dependencies for pyenv
-    build-essential \
-    libssl-dev \
-    zlib1g-dev \
-    libbz2-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libncursesw5-dev \
-    xz-utils \
-    tk-dev \
-    libxml2-dev \
-    libxmlsec1-dev \
-    libffi-dev \
-    liblzma-dev \
     # Language runtimes
     default-jre \
     python3 \
     python3-pip \
     python3-boto3 \
     python3-jinja2 \
-    python3-poetry \
     python3-pydantic \
     python3-typer \
     python3-yaml  \
@@ -78,9 +63,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
 
 # Upgrade npm to latest major (nodesource ships 10.x)
 RUN npm install -g npm@12.0.2
-
-# Install pyenv
-RUN curl https://pyenv.run | bash
 
 # Validate Node.js installation
 RUN node --version && npm --version && npx --version
@@ -144,43 +126,10 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 
 RUN ln -sf /usr/share/zoneinfo/${TZ:-UTC} /etc/localtime
 
-# SOPS — required by OTHER repos' local secret pipelines that run inside this
-# shared devcontainer (e.g. the workflows repo's `make local-env` decrypts
-# local/secrets.enc.json for the team Twilio secrets). devcontainerb itself no
-# longer uses SOPS, but the image is shared across repos that still do.
-RUN arch="$(dpkg --print-architecture)" && \
-    curl -LO "https://github.com/getsops/sops/releases/download/v3.12.1/sops-v3.12.1.linux.${arch}" && \
-    mv "sops-v3.12.1.linux.${arch}" /usr/local/bin/sops && \
-    chmod +x /usr/local/bin/sops
-
-# # DuckDb
-# RUN curl https://install.duckdb.org | sh
-
-
-# # Install .NET SDK (separate layer as it changes less frequently)
-# RUN add-apt-repository -y ppa:dotnet/backports && \
-#     apt-get update -y && \
-#     apt-get install -y dotnet-sdk-9.0 && \
-#     /bin/rm -rf /var/lib/apt/lists/*
-# Install .NET SDK 9.0 via Microsoft package feed
-
-# RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft.gpg && \
-#     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/24.04/prod noble main" \
-#     > /etc/apt/sources.list.d/microsoft-prod.list && \
-#     apt-get update -y && \
-#     apt-get install -y dotnet-sdk-9.0 && \
-#     /bin/rm -rf /var/lib/apt/lists/*
-
 # Google Cloud CLI
-RUN apt-get update -y
-
-RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-    | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
-
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] \
-    https://packages.cloud.google.com/apt cloud-sdk main" \
-    | tee /etc/apt/sources.list.d/google-cloud-sdk.list
-
-RUN apt-get update -y && apt-get install -y google-cloud-cli
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    apt-get update -y && apt-get install -y google-cloud-cli && \
+    /bin/rm -rf /var/lib/apt/lists/*
 
 CMD ["sleep", "infinity"]

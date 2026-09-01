@@ -199,6 +199,8 @@
           }
         },
         "extensions.ignoreRecommendations": true,
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "python.disablePromptForDownloadingInsiders": true,
         "[terraform]": {
           "editor.defaultFormatter": "hashicorp.terraform",
           "editor.formatOnSave": true

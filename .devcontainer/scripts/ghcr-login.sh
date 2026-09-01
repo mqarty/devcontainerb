@@ -36,7 +36,7 @@ fi
 
 log "Resolving GitHub username from token"
 # Resolve GitHub username from token so docker login can authenticate to ghcr.
-username="$(curl -fsSL \
+username="$(timeout 10 curl -fsSL \
   -H "Authorization: Bearer $token" \
   -H 'Accept: application/vnd.github+json' \
   https://api.github.com/user \
@@ -44,11 +44,11 @@ username="$(curl -fsSL \
   | head -n1 || true)"
 
 if [[ -z "$username" ]]; then
-  echo "Could not resolve GitHub username from GITHUB_TOKEN; skipping ghcr login" >&2
-  log "Failed to resolve username; skipping ghcr login"
+  log "Failed to resolve GitHub username (timeout or API error); skipping ghcr login"
   exit 0
 fi
 
 log "Logging into ghcr.io as $username"
-printf '%s' "$token" | docker login ghcr.io -u "$username" --password-stdin >/dev/null 2>&1 || true
+timeout 10 bash -c "printf '%s' \"$token\" | docker login ghcr.io -u \"$username\" --password-stdin >/dev/null 2>&1" || \
+  log "docker login timed out; continuing without ghcr authentication"
 log "ghcr.io login complete"

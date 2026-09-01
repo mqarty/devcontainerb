@@ -10,8 +10,8 @@ WORKSPACE_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 setup_gh_auth() {
   log "Configuring GitHub CLI authentication"
   if command -v gh >/dev/null 2>&1 && [[ -n "${GITHUB_TOKEN:-}" ]]; then
-    printf '%s' "${GITHUB_TOKEN}" | gh auth login --hostname github.com --with-token >/dev/null 2>&1 || true
-    gh auth setup-git >/dev/null 2>&1 || true
+    timeout 10 bash -c "printf '%s' \"${GITHUB_TOKEN}\" | gh auth login --hostname github.com --with-token >/dev/null 2>&1" || log "GitHub CLI auth login timed out"
+    timeout 10 gh auth setup-git >/dev/null 2>&1 || log "GitHub CLI setup-git timed out"
     log "GitHub CLI authentication configured"
   else
     log "Skipping GitHub CLI authentication (gh or GITHUB_TOKEN missing)"
@@ -20,7 +20,7 @@ setup_gh_auth() {
   # Some networks block SSH (port 22), which breaks git/uv fetches over an
   # unconditional insteadOf rewrite. Only prefer SSH if it's actually reachable;
   # otherwise keep HTTPS, which gh auth setup-git already wired up with a token.
-  if timeout 5 ssh -T -o BatchMode=yes -o StrictHostKeyChecking=no git@github.com >/dev/null 2>&1; [[ $? -eq 1 ]]; then
+  if timeout 5 ssh -T -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=3 git@github.com >/dev/null 2>&1; [[ $? -eq 1 ]]; then
     log "Configuring git to use SSH for GitHub"
     git config --global url."git@github.com:".insteadOf "https://github.com/" || true
   else
@@ -32,21 +32,43 @@ setup_gh_auth() {
 mark_repos_safe() {
   # Workspace repos are owned by the host user, not root, so git refuses to use them.
   log "Marking workspace repositories as git safe directories"
-  for repo in "${WORKSPACE_DIR}"/*; do
-    if [[ -e "${repo}/.git" ]]; then
-      git config --global --get-all safe.directory | grep -Fxq "${repo}" || \
-        git config --global --add safe.directory "${repo}"
+
+  # Find all repos with .git and collect them
+  local repos
+  mapfile -t repos < <(find "${WORKSPACE_DIR}" -maxdepth 2 -type d -name .git -exec dirname {} \; | sort -u)
+
+  if [[ ${#repos[@]} -eq 0 ]]; then
+    log "No git repositories found"
+    return
+  fi
+
+  # Get existing safe directories once
+  local existing_safe
+  existing_safe="$(git config --global --get-all safe.directory 2>/dev/null | sort -u || true)"
+
+  # Add each repo if not already present
+  for repo in "${repos[@]}"; do
+    if ! grep -Fxq "$repo" <<<"$existing_safe"; then
+      git config --global --add safe.directory "$repo"
     fi
   done
 }
 
 install_pre_commit_hooks() {
   log "Installing pre-commit hooks for repositories with pre-commit configuration"
-  for repo in "${WORKSPACE_DIR}"/*; do
-    if [[ -d "${repo}/.git" && -f "${repo}/.pre-commit-config.yaml" ]]; then
-      log "Installing pre-commit hook in ${repo##*/}"
-      (cd "${repo}" && pre-commit install) || log "WARNING: pre-commit install failed in ${repo##*/}"
-    fi
+
+  # Find all repos with .pre-commit-config.yaml
+  local repos
+  mapfile -t repos < <(find "${WORKSPACE_DIR}" -maxdepth 2 -name .pre-commit-config.yaml -type f -exec dirname {} \; | sort -u)
+
+  if [[ ${#repos[@]} -eq 0 ]]; then
+    log "No pre-commit configurations found"
+    return
+  fi
+
+  for repo in "${repos[@]}"; do
+    log "Installing pre-commit hook in ${repo##*/}"
+    (cd "$repo" && timeout 30 pre-commit install) || log "WARNING: pre-commit install failed in ${repo##*/}"
   done
 }
 
