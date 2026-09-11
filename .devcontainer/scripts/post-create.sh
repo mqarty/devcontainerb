@@ -74,38 +74,23 @@ install_pre_commit_hooks() {
 
 log "Starting post-create setup"
 
-log "Installing dotfiles"
-cd /root/dotfiles
-bash install.sh
-log "Dotfiles installation complete"
-
 log "Assembling .env from env.defaults + env.local"
 bash "${WORKSPACE_DIR}/.devcontainer/scripts/build-env.sh" || true
-# Load the assembled secrets so the steps below (gh auth, uv) see GITHUB_TOKEN
+# Load the assembled secrets so the steps below see GITHUB_TOKEN
 # even on first creation, when runArgs --env-file read an empty .env.
 if [[ -f "${WORKSPACE_DIR}/.devcontainer/local/.env" ]]; then
   set -a; source "${WORKSPACE_DIR}/.devcontainer/local/.env"; set +a
   log "Loaded ${WORKSPACE_DIR}/.devcontainer/local/.env into environment"
 fi
 
-if command -v zsh >/dev/null 2>&1; then
-  current_shell="$(getent passwd "$(id -un)" | cut -d: -f7)"
-  zsh_path="$(command -v zsh)"
-  if [[ "${current_shell}" != "${zsh_path}" ]]; then
-    log "Setting default login shell to zsh"
-    chsh -s "${zsh_path}" "$(id -un)" || true
-  fi
-fi
-
-setup_gh_auth
-mark_repos_safe
-install_pre_commit_hooks
-
-UV_SYNC_REPOS=(voice-core)
-
-for repo in "${UV_SYNC_REPOS[@]}"; do
-  log "Syncing uv dependencies for ${repo}"
-  bash "${WORKSPACE_DIR}/.devcontainer/scripts/uv-sync.sh" "${repo}"
-done
+# Shell setup handled by devcontainer.json terminal.integrated.defaultProfile.linux
+# if command -v zsh >/dev/null 2>&1; then
+#   current_shell="$(getent passwd "$(id -un)" | cut -d: -f7)"
+#   zsh_path="$(command -v zsh)"
+#   if [[ "${current_shell}" != "${zsh_path}" ]]; then
+#     log "Setting default login shell to zsh"
+#     chsh -s "${zsh_path}" "$(id -un)" || true
+#   fi
+# fi
 
 log "Post-create setup complete"

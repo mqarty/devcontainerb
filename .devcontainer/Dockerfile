@@ -23,7 +23,6 @@ RUN apt-get update -y && \
     unzip \
     zip \
     # Shell and terminal tools
-    bash-completion \
     zsh \
     fzf \
     tree \
@@ -41,7 +40,6 @@ RUN apt-get update -y && \
     make \
     sudo \
     # Language runtimes
-    default-jre \
     python3 \
     python3-pip \
     python3-boto3 \
@@ -98,8 +96,9 @@ RUN arch="$(dpkg --print-architecture)" && \
     terraform -version
 
 # Configure git
-RUN git config --global init.defaultBranch main
-RUN git config --global pull.rebase true
+RUN git config --global init.defaultBranch main && \
+    git config --global pull.rebase true && \
+    git config --global --add safe.directory '*'
 
 # Install AWS CLI (architecture-aware binary install)
 RUN arch="$(dpkg --print-architecture)" && \
@@ -131,5 +130,9 @@ RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -
     echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && \
     apt-get update -y && apt-get install -y google-cloud-cli && \
     /bin/rm -rf /var/lib/apt/lists/*
+
+# Block problematic extension
+RUN mkdir -p /root/.vscode-server/extensions && \
+    echo '{}' > /root/.vscode-server/extensions/extensions.json
 
 CMD ["sleep", "infinity"]
