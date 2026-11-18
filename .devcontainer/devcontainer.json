@@ -55,7 +55,6 @@
   "mounts": [
     "source=shell-history-devcontainerb,target=/root/.shell_history_dir,type=volume",
     "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
-    "source=${localWorkspaceFolder}/dotfiles,target=/root/dotfiles,type=bind",
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.claude,target=/root/.claude,type=bind",
@@ -186,19 +185,10 @@
       "extensions": [
         "ms-python.python",
         "charliermarsh.ruff",
-        "streetsidesoftware.code-spell-checker",
         "postman.postman-for-vscode"
       ],
       "settings": {
-        "chat.mcp.enabled": true,
         "editor.tabSize": 4,
-        "terminal.integrated.defaultProfile.linux": "zsh",
-        "terminal.integrated.profiles.linux": {
-          "zsh": {
-            "path": "/usr/bin/zsh"
-          }
-        },
-        "extensions.ignoreRecommendations": true,
         "python.defaultInterpreterPath": "/usr/bin/python3",
         "python.disablePromptForDownloadingInsiders": true,
         "[terraform]": {
@@ -236,29 +226,6 @@
               "POSTHOG_PROJECT_ID": "12345",
               "POSTHOG_HOST": "https://us.i.posthog.com"
             }
-          },
-          // "roark": {
-          //   "command": "npx",
-          //   "args": [
-          //     "-y",
-          //     "@roarkanalytics/sdk-mcp"
-          //   ],
-          //   "env": {
-          //     "ROARK_API_BEARER_TOKEN": "$ROARK_API_KEY"
-          //   }
-          // },
-          // "postman": {
-          //   "type": "http",
-          //   "url": "https://mcp.postman.com/mcp",
-          //   "headers": {
-          //     "Authorization": "${input:Authorization}"
-          //   },
-          //   "gallery": "https://api.mcp.github.com",
-          //   "version": "2.8.7"
-          // },
-          "figma": {
-            "type": "http",
-            "url": "https://mcp.figma.com/mcp"
           }
         }
       }

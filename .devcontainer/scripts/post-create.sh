@@ -83,14 +83,4 @@ if [[ -f "${WORKSPACE_DIR}/.devcontainer/local/.env" ]]; then
   log "Loaded ${WORKSPACE_DIR}/.devcontainer/local/.env into environment"
 fi
 
-# Shell setup handled by devcontainer.json terminal.integrated.defaultProfile.linux
-# if command -v zsh >/dev/null 2>&1; then
-#   current_shell="$(getent passwd "$(id -un)" | cut -d: -f7)"
-#   zsh_path="$(command -v zsh)"
-#   if [[ "${current_shell}" != "${zsh_path}" ]]; then
-#     log "Setting default login shell to zsh"
-#     chsh -s "${zsh_path}" "$(id -un)" || true
-#   fi
-# fi
-
 log "Post-create setup complete"
