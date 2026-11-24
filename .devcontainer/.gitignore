@@ -4,8 +4,11 @@
 # Generated env-file (built by scripts/build-env.sh) — never commit.
 .env
 
-# All secrets (shared team + personal) — never commit (env.local.example is the template).
+# Personal secrets — never commit (env.local.example is the template).
 env.local
+
+# Plaintext input to scripts/encrypt-secrets.sh — never commit (secrets.enc.json is the committed form).
+secrets.json
 
 # Backups / editor stray copies — may contain real secrets, never commit.
 *.bak
