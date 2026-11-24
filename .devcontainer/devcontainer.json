@@ -1,5 +1,7 @@
 {
   "name": "⚡ ⚡ devcontainerb ⚡ ⚡",
+  // TEMP (OOM bisect): open only realtime-harness; the full r11h tree is still mounted.
+  "workspaceFolder": "/workspaces/r11h/realtime-harness",
   "privileged": true,
   "overrideCommand": false,
   "build": {
@@ -54,7 +56,7 @@
   // authenticate the in-container docker daemon that `docker compose --build` uses.
   "mounts": [
     "source=shell-history-devcontainerb,target=/root/.shell_history_dir,type=volume",
-    "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=${containerWorkspaceFolder}/.github/CLAUDE.md,type=bind",
+    "source=${localWorkspaceFolder}/.devcontainer/CLAUDE.md,target=/workspaces/${localWorkspaceFolderBasename}/.github/CLAUDE.md,type=bind",
     "source=zsh-history,target=/root/.zsh_history_container,type=volume",
     "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.claude,target=/root/.claude,type=bind",
@@ -69,11 +71,9 @@
     // For Terraform
     "GODEBUG": "netdns=cgo"
   },
-  "postCreateCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh'",
-  "postStartCommand": "bash -lc '${containerWorkspaceFolder}/.devcontainer/scripts/post-start.sh'",
+  "postCreateCommand": "bash -lc '/workspaces/${localWorkspaceFolderBasename}/.devcontainer/scripts/post-create.sh'",
+  "postStartCommand": "bash -lc '/workspaces/${localWorkspaceFolderBasename}/.devcontainer/scripts/post-start.sh'",
   "forwardPorts": [
-    80,
-    443,
     8081,
     8443,
     2019,
@@ -220,7 +220,7 @@
             "command": "bash",
             "args": [
               "-lc",
-              "set -a; [ -f ${containerWorkspaceFolder}/.devcontainer/local/.env ] && . ${containerWorkspaceFolder}/.devcontainer/local/.env; set +a; exec npx -y @posthog/mcp-server"
+              "set -a; [ -f /workspaces/${localWorkspaceFolderBasename}/.devcontainer/local/.env ] && . /workspaces/${localWorkspaceFolderBasename}/.devcontainer/local/.env; set +a; exec npx -y @posthog/mcp-server"
             ],
             "env": {
               "POSTHOG_PROJECT_ID": "12345",
